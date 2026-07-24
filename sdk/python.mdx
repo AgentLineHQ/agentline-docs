@@ -1,0 +1,59 @@
+---
+title: Python SDK
+description: Use AgentLine from Python.
+icon: python
+---
+
+# Python SDK
+
+```bash
+pip install agentline-ai
+```
+
+```python
+from agentline_ai import AgentLine
+
+client = AgentLine(api_key="sk_live_...")
+```
+
+> PyPI `agentline` is already taken, so the Python distribution is
+> **`agentline-ai`** (import `agentline_ai`). npm `agentline` is used by the
+> [Node SDK](/sdk/node).
+
+## Resources
+
+The client is grouped by resource, mirroring the [API Reference](/api-reference):
+
+```python
+client.agents     # create, list, get, update, delete
+client.numbers    # buy, list, get, reassign
+client.calls      # create, list, get, get_transcript, hangup, push_context
+client.messages   # send, list, list_conversations
+client.events     # poll, peek
+client.webhooks   # list, set, delete, test
+client.billing    # get_balance, get_expenditure, get_summary, ...
+client.voice      # list, get, set, reset
+```
+
+## End-to-end example
+
+```python
+from agentline_ai import AgentLine
+
+client = AgentLine(api_key="sk_live_...")
+
+agent = client.agents.create(
+    name="Support Bot",
+    system_prompt="You are a helpful assistant.",
+    initial_greeting="Hello! How can I help you today?",
+)
+client.numbers.buy(agent_id=agent.id, country="US", area_code="415")
+
+call = client.calls.create(agent_id=agent.id, to_number="+12125557890")
+client.calls.hangup(call.id)
+
+print(client.calls.get_transcript(call.id))
+```
+
+The package is generated with [Fern](https://buildwithfern.com) from the same
+OpenAPI spec as this API reference, so the SDK and docs always match.

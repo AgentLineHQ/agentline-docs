@@ -1,0 +1,49 @@
+---
+title: Events
+description: Poll a consume-once mailbox for call/SMS events.
+icon: inbox
+---
+
+# Events
+
+If you can't expose a public webhook, poll the **event mailbox**. When calls
+complete (with transcripts) or messages arrive, events land here.
+
+## Poll (consume once)
+
+`poll` returns pending events **and deletes them** — treat it as a
+one-time read.
+
+<CodeGroup>
+  ```python
+  result = client.events.poll(event_type="call.completed", limit=50)
+  for e in result["events"]:
+      print(e["event_type"], e["payload"])
+  ```
+  ```javascript
+  const result = await client.events.poll({ eventType: "call.completed", limit: 50 });
+  for (const e of result.events) console.log(e.event_type, e.payload);
+  ```
+</CodeGroup>
+
+Each event has `{ event_id, agent_id, event_type, payload, created_at }`.
+Common `event_type`s include `call.completed`, `call.failed`, `sms.received`.
+
+## Peek (non-destructive)
+
+`peek` previews what's queued **without** consuming it — handy to check before
+committing to retrieve.
+
+<CodeGroup>
+  ```python
+  client.events.peek(agent_id=agent.id)
+  ```
+  ```javascript
+  await client.events.peek({ agentId: agent.id });
+  ```
+</CodeGroup>
+
+<Tip>
+  Prefer [webhooks](/guides/webhooks) for low-latency delivery; use the
+  mailbox for local dev, serverless, or environments without an inbound URL.
+</Tip>

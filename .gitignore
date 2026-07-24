@@ -1,0 +1,8 @@
+# Local preview cache
+/.mint/
+
+# OS / editor noise
+.DS_Store
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,86 @@
+---
+title: Webhooks
+description: Receive signed, real-time event deliveries per agent.
+icon: webhook
+---
+
+# Webhooks
+
+Each agent can have **one webhook URL** that receives all of that agent's
+events (call lifecycle, SMS, etc.) as signed JSON POSTs.
+
+## Configure a webhook
+
+<CodeGroup>
+  ```python
+  wh = client.webhooks.set(
+      agent_id=agent.id,
+      url="https://yourapp.com/agentline-webhook",
+  )
+  print(wh.secret)  # full secret shown ONCE — save it
+  ```
+  ```javascript
+  const wh = await client.webhooks.set({
+      agentId: agent.id,
+      url: "https://yourapp.com/agentline-webhook",
+  });
+  console.log(wh.secret); // full secret shown ONCE — save it
+  ```
+</CodeGroup>
+
+The response returns the **full signing secret once**. On later reads it is
+masked.
+
+## Verify the signature
+
+Each delivery includes an HMAC-SHA256 signature of the **raw request body** in
+a header (default `X-Webhook-Signature`). Verify it before trusting the
+payload:
+
+<CodeGroup>
+  ```python
+  import hmac, hashlib
+
+  def verify(raw_body: bytes, signature: str, secret: str) -> bool:
+      expected = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+      return hmac.compare_digest(expected, signature)
+  ```
+  ```javascript
+  import crypto from "node:crypto";
+
+  function verify(rawBody, signature, secret) {
+    const expected = crypto
+      .createHmac("sha256", secret)
+      .update(rawBody)
+      .digest("hex");
+    return crypto.timingSafeEqual(
+      Buffer.from(expected),
+      Buffer.from(signature),
+    );
+  }
+  ```
+</CodeGroup>
+
+<Note>
+  You can set a custom signature header (e.g. `X-Hub-Signature-256` for
+  GitHub-style verification) via the `signature_header` field when configuring
+  the webhook.
+</Note>
+
+## Manage & test
+
+<CodeGroup>
+  ```python
+  client.webhooks.list()
+  client.webhooks.delete(agent_id=agent.id)
+  client.webhooks.test(agent_id=agent.id)   # sends a signed webhook.test event
+  ```
+  ```javascript
+  await client.webhooks.list();
+  await client.webhooks.delete({ agentId: agent.id });
+  await client.webhooks.test({ agentId: agent.id });
+  ```
+</CodeGroup>
+
+`test` fires a `webhook.test` event through the exact same pipeline as real
+events — a successful delivery confirms the whole chain is wired correctly.

@@ -1,0 +1,46 @@
+---
+title: Messages
+description: Send SMS and list conversations from your agents.
+---
+
+# Messages
+
+Send and receive SMS/MMS from your agent's phone number. Messages are grouped
+into **conversations** per contact.
+
+## Send an SMS
+
+<CodeGroup>
+  ```python
+  msg = client.messages.send(
+      agent_id=agent.id,
+      to_number="+12125557890",
+      body="Your code is 482913. Expires in 5 minutes.",
+      media_url="https://example.com/receipt.png",  # optional (MMS)
+  )
+  ```
+  ```javascript
+  const msg = await client.messages.send({
+      agentId: agent.id,
+      toNumber: "+12125557890",
+      body: "Your code is 482913. Expires in 5 minutes.",
+      mediaUrl: "https://example.com/receipt.png",
+  });
+  ```
+</CodeGroup>
+
+## List messages and conversations
+
+<CodeGroup>
+  ```python
+  client.messages.list(agent_id=agent.id, limit=50)
+  client.messages.list_conversations(agent_id=agent.id)
+  ```
+  ```javascript
+  await client.messages.list({ agentId: agent.id, limit: 50 });
+  await client.messages.listConversations({ agentId: agent.id });
+  ```
+</CodeGroup>
+
+Inbound messages arrive through your agent's
+[webhook](/guides/webhooks) or the [events](/guides/events) mailbox.

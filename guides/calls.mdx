@@ -1,0 +1,75 @@
+---
+title: Calls
+description: Make outbound calls, hang up, and read transcripts.
+---
+
+# Calls
+
+Calls use a hybrid relay pipeline: the provider answers, plays the greeting,
+records caller speech, transcribes it (Deepgram), and your agent replies with
+text that is spoken back (TTS). The full transcript is saved automatically.
+
+## Make an outbound call
+
+<CodeGroup>
+  ```python
+  call = client.calls.create(
+      agent_id=agent.id,
+      to_number="+12125557890",
+      # optional per-call overrides:
+      system_prompt="You are confirming an appointment.",
+      initial_greeting="Hi, calling about your appointment tomorrow.",
+  )
+  ```
+  ```javascript
+  const call = await client.calls.create({
+      agentId: agent.id,
+      toNumber: "+12125557890",
+      systemPrompt: "You are confirming an appointment.",
+      initialGreeting: "Hi, calling about your appointment tomorrow.",
+  });
+  ```
+</CodeGroup>
+
+The call is placed from the agent's assigned number (or `from_number_id` if
+provided). Returns a `call_id` you use to control and inspect the call.
+
+## Control and inspect
+
+<CodeGroup>
+  ```python
+  client.calls.hangup(call.id)
+  client.calls.get(call.id)
+  transcript = client.calls.get_transcript(call.id)
+  client.calls.list(status="completed")
+  ```
+  ```javascript
+  await client.calls.hangup(call.id);
+  await client.calls.get(call.id);
+  const transcript = await client.calls.getTranscript(call.id);
+  await client.calls.list({ status: "completed" });
+  ```
+</CodeGroup>
+
+## Pushing context to a live call (relay mode)
+
+If your backend (Hermes, OpenClaw, etc.) needs to answer a live caller after a
+`call.utterance` event, push the answer with `push_context`. Authenticate with
+the `push_token` from the event (no API key needed) **or** a Bearer key.
+
+<CodeGroup>
+  ```python
+  client.calls.push_context(call.id, context="Their order ships Tuesday.")
+  ```
+  ```javascript
+  await client.calls.pushContext(call.id, { context: "Their order ships Tuesday." });
+  ```
+</CodeGroup>
+
+Returns `delivered=true` with `status` of `live` or `buffered`. A **410**
+means the call has ended — abandon the in-flight lookup.
+
+<Note>
+  Transcripts are a list of `{role, text, timestamp}` turns where
+  `role` is `human` (caller) or `assistant` (the AI agent).
+</Note>

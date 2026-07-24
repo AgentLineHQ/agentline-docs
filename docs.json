@@ -1,0 +1,60 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "AgentLine",
+  "description": "Phone numbers, voice, and SMS for AI agents. Documentation, SDKs, and API reference.",
+  "colors": {
+    "primary": "#6366f1"
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "python", "javascript"],
+      "autogenerate": true
+    },
+    "params": {
+      "expanded": "closed"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/agents",
+              "guides/numbers",
+              "guides/calls",
+              "guides/messages",
+              "guides/events",
+              "guides/webhooks"
+            ]
+          },
+          {
+            "group": "SDKs",
+            "pages": ["sdk/python", "sdk/node"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "openapi.json"
+      }
+    ]
+  },
+  "footer": {
+    "links": [
+      { "name": "Website", "href": "https://agentline.ai" },
+      { "name": "SDKs", "href": "https://github.com/AgentLineHQ" },
+      { "name": "Support", "href": "mailto:support@agentline.ai" }
+    ]
+  }
+}

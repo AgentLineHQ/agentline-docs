@@ -1,0 +1,82 @@
+---
+title: Quickstart
+description: Create an agent, buy a number, and make your first call.
+---
+
+# Quickstart
+
+## 1. Get an API key
+
+AgentLine uses email one-time codes for sign-up and sign-in (no dashboard
+required).
+
+<CodeGroup>
+  ```bash Request a code
+  curl -X POST https://api.agentline.cloud/v1/auth/otp \
+    -H "Content-Type: application/json" \
+    -d '{"email": "you@example.com"}'
+  ```
+  ```bash Verify and get a key
+  curl -X POST https://api.agentline.cloud/v1/auth/verify \
+    -H "Content-Type: application/json" \
+    -d '{"email": "you@example.com", "otp": "123456"}'
+  ```
+</CodeGroup>
+
+The verify response returns `api_key` (shown once — store it). New accounts
+get a sign-up credit to start.
+
+## 2. Use the SDK
+
+<CodeGroup>
+  ```python
+  from agentline_ai import AgentLine
+
+  client = AgentLine(api_key="sk_live_...")
+
+  agent = client.agents.create(
+      name="Support Bot",
+      system_prompt="You are a helpful assistant.",
+      initial_greeting="Hello! How can I help?",
+  )
+  client.numbers.buy(agent_id=agent.id, country="US", area_code="415")
+  call = client.calls.create(agent_id=agent.id, to_number="+12125557890")
+
+  print("Call started:", call.id)
+  ```
+  ```javascript
+  import { AgentLineClient } from "agentline";
+
+  const client = new AgentLineClient({ apiKey: "sk_live_..." });
+
+  const agent = await client.agents.create({
+      name: "Support Bot",
+      systemPrompt: "You are a helpful assistant.",
+      initialGreeting: "Hello! How can I help?",
+  });
+  await client.numbers.buy({ agentId: agent.id, country: "US", areaCode: "415" });
+  const call = await client.calls.create({ agentId: agent.id, toNumber: "+12125557890" });
+
+  console.log("Call started:", call.id);
+  ```
+</CodeGroup>
+
+## 3. Get the results
+
+Poll for events (call completions + transcripts), or receive them via webhook.
+
+<CodeGroup>
+  ```python
+  events = client.events.poll()
+  ```
+  ```javascript
+  const events = await client.events.poll();
+  ```
+</CodeGroup>
+
+<Tip>
+  All phone numbers are E.164 format, e.g. `+12125557890`. Each agent can have
+  one active number at a time.
+</Tip>
+
+Next: read [Authentication](/authentication) and the [Agents guide](/guides/agents).

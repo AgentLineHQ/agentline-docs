@@ -1,0 +1,43 @@
+---
+title: Introduction
+description: AgentLine gives every AI agent a real phone number, a human-like voice, and SMS.
+---
+
+# AgentLine
+
+AgentLine is an AI-native telephony platform. Give your agent a real phone
+number, a human-like voice, and the ability to make and receive calls and SMS
+autonomously.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get a number and make your first call in five minutes.
+  </Card>
+  <Card title="API Reference" icon="square-terminal" href="/api-reference">
+    Every endpoint, with an interactive playground.
+  </Card>
+  <Card title="Python SDK" icon="python" href="/sdk/python">
+    `pip install agentline-ai`
+  </Card>
+  <Card title="Node SDK" icon="nodejs" href="/sdk/node">
+    `npm i agentline`
+  </Card>
+</CardGroup>
+
+## What you can build
+
+- **AI phone agents** that answer and place real calls.
+- **Outbound dialers** for sales, follow-ups, and reminders.
+- **AI receptionists** that route and transfer calls.
+- **SMS assistants** that text on your agent's behalf.
+
+## How it works
+
+```
+1. Create an agent        POST /v1/agents
+2. Buy a phone number     POST /v1/numbers
+3. Make / receive calls   POST /v1/calls      (real-time transcription + TTS)
+4. Get results            GET  /v1/calls/{id}/transcript  or  webhooks/events
+```
+
+Every request is authenticated with `Authorization: Bearer sk_live_...`.

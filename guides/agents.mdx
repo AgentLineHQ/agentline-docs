@@ -1,0 +1,65 @@
+---
+title: Agents
+description: Create and configure AI voice agents.
+---
+
+# Agents
+
+An **agent** bundles a system prompt, greeting, voice, and call-handling
+behavior. Every number and call belongs to an agent.
+
+## Create an agent
+
+<CodeGroup>
+  ```python
+  agent = client.agents.create(
+      name="Support Bot",
+      system_prompt="You are a helpful assistant. Be concise.",
+      initial_greeting="Hi, this is Support. How can I help?",
+      voice_id="female-1",
+  )
+  ```
+  ```javascript
+  const agent = await client.agents.create({
+      name: "Support Bot",
+      systemPrompt: "You are a helpful assistant. Be concise.",
+      initialGreeting: "Hi, this is Support. How can I help?",
+      voiceId: "female-1",
+  });
+  ```
+</CodeGroup>
+
+| Field | Purpose |
+|-------|---------|
+| `name` | Display name |
+| `system_prompt` | Default instructions for all calls |
+| `initial_greeting` | Opening line spoken when a call connects |
+| `voice_id` | TTS preset (`female-1`) or Cartesia UUID |
+| `transfer_number` | E.164 number to transfer calls to |
+| `voicemail_message` | Message left if the call hits voicemail |
+| `owner_phone` | Owner number — calls from it enter "task mode" |
+
+## Manage agents
+
+<CodeGroup>
+  ```python
+  client.agents.list()
+  client.agents.get(agent.id)
+  client.agents.update(agent.id, voice_id="male-1")
+  client.agents.delete(agent.id)
+  ```
+  ```javascript
+  await client.agents.list();
+  await client.agents.get(agent.id);
+  await client.agents.update(agent.id, { voiceId: "male-1" });
+  await client.agents.delete(agent.id);
+  ```
+</CodeGroup>
+
+<Tip>
+  Per-call overrides: when making a call you can pass `system_prompt`,
+  `initial_greeting`, and `voice_id` to override the agent defaults for that
+  single call.
+</Tip>
+
+See the [Create Agent endpoint](/api-reference) in the API Reference.

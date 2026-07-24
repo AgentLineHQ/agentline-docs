@@ -1,0 +1,58 @@
+---
+title: Phone Numbers
+description: Provision and manage US phone numbers for your agents.
+---
+
+# Phone Numbers
+
+Each agent can have **one active phone number**. Numbers cost a flat
+provisioning fee, deducted from your balance.
+
+## Buy a number
+
+<CodeGroup>
+  ```python
+  number = client.numbers.buy(
+      agent_id=agent.id,
+      country="US",
+      number_type="local",
+      area_code="415",
+  )
+  ```
+  ```javascript
+  const number = await client.numbers.buy({
+      agentId: agent.id,
+      country: "US",
+      numberType: "local",
+      areaCode: "415",
+  });
+  ```
+</CodeGroup>
+
+| Field | Notes |
+|-------|-------|
+| `agent_id` | Agent to assign the number to (required) |
+| `country` | Currently `US` |
+| `number_type` | `local` or `tollfree` |
+| `area_code` | Preferred 3-digit US area code (e.g. `212`, `415`, `310`) |
+
+## List and reassign
+
+<CodeGroup>
+  ```python
+  client.numbers.list()
+  client.numbers.get(number.id)
+  client.numbers.reassign(number.id, agent_id=other_agent.id)
+  ```
+  ```javascript
+  await client.numbers.list();
+  await client.numbers.get(number.id);
+  await client.numbers.reassign(number.id, { agentId: otherAgent.id });
+  ```
+</CodeGroup>
+
+<Note>
+  Reassigning moves the number to another agent. The target agent must not
+  already have an active number. Deleting an agent detaches (but does not
+  release) its number.
+</Note>

@@ -1,0 +1,56 @@
+---
+title: Node SDK
+description: Use AgentLine from TypeScript / JavaScript.
+icon: nodejs
+---
+
+# Node SDK
+
+```bash
+npm i agentline
+```
+
+```typescript
+import { AgentLineClient } from "agentline";
+
+const client = new AgentLineClient({ apiKey: "sk_live_..." });
+```
+
+## Resources
+
+The client is grouped by resource, mirroring the [API Reference](/api-reference):
+
+```typescript
+client.agents     // create, list, get, update, delete
+client.numbers    // buy, list, get, reassign
+client.calls      // create, list, get, getTranscript, hangup, pushContext
+client.messages   // send, list, listConversations
+client.events     // poll, peek
+client.webhooks   // list, set, delete, test
+client.billing    // getBalance, getExpenditure, getSummary, ...
+client.voice      // list, get, set, reset
+```
+
+## End-to-end example
+
+```typescript
+import { AgentLineClient } from "agentline";
+
+const client = new AgentLineClient({ apiKey: "sk_live_..." });
+
+const agent = await client.agents.create({
+    name: "Support Bot",
+    systemPrompt: "You are a helpful assistant.",
+    initialGreeting: "Hello! How can I help you today?",
+});
+await client.numbers.buy({ agentId: agent.id, country: "US", areaCode: "415" });
+
+const call = await client.calls.create({ agentId: agent.id, toNumber: "+12125557890" });
+await client.calls.hangup(call.id);
+
+console.log(await client.calls.getTranscript(call.id));
+```
+
+The package is generated with [Fern](https://buildwithfern.com) from the same
+OpenAPI spec as this API reference, so the SDK and docs always match. Works on
+Node 18+, Vercel, Cloudflare Workers, Deno, Bun, and React Native.

@@ -1,0 +1,70 @@
+---
+title: Authentication
+description: Every request uses a Bearer API key (sk_live_...).
+---
+
+# Authentication
+
+AgentLine uses **Bearer API keys**. Every authenticated request needs:
+
+```
+Authorization: Bearer sk_live_xxxxxxxxxxxx
+```
+
+## Getting a key
+
+Sign-up and sign-in use the same email one-time-code flow:
+
+<Steps>
+  <Step title="Request a code">
+    ```bash
+    POST /v1/auth/otp   { "email": "you@example.com" }
+    ```
+  </Step>
+  <Step title="Verify the code to mint a key">
+    ```bash
+    POST /v1/auth/verify { "email": "...", "otp": "123456" }
+    ```
+    Returns `api_key` (plaintext, **shown once**) plus your `account_id` and
+    balance. New emails auto-create an account with a sign-up credit.
+  </Step>
+</Steps>
+
+The same email always resolves to the same account — an agent that signs up
+and a human who later signs in land on the identical account.
+
+## Managing keys
+
+<CodeGroup>
+  ```bash Mint another key
+  POST /v1/auth/keys
+  ```
+  ```bash List keys
+  GET /v1/auth/keys
+  ```
+  ```bash Revoke a key
+  DELETE /v1/auth/keys/{key_id}
+  ```
+</CodeGroup>
+
+<Warning>
+  You can't revoke the key currently authenticating a request. Use a second
+  active key, then revoke the old one. Keys are bcrypt-hashed at rest.
+</Warning>
+
+## Using the key
+
+<CodeGroup>
+  ```python
+  from agentline_ai import AgentLine
+  client = AgentLine(api_key="sk_live_...")
+  ```
+  ```javascript
+  import { AgentLineClient } from "agentline";
+  const client = new AgentLineClient({ apiKey: "sk_live_..." });
+  ```
+  ```bash
+  curl https://api.agentline.cloud/v1/agents \
+    -H "Authorization: Bearer sk_live_..."
+  ```
+</CodeGroup>
