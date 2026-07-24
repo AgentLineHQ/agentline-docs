@@ -9,6 +9,11 @@
     "dark": "#B91C1C"
   },
   "favicon": "/images/favicon.png",
+  "logo": {
+    "light": "/images/favicon.png",
+    "dark": "/images/favicon.png",
+    "href": "https://agentline.ai"
+  },
   "api": {
     "playground": {
       "display": "interactive"
