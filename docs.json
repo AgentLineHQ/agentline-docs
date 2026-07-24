@@ -4,7 +4,7 @@
   "name": "AgentLine",
   "description": "Phone numbers, voice, and SMS for AI agents. Documentation, SDKs, and API reference.",
   "colors": {
-    "primary": "#6366f1"
+    "primary": "#DC2626"
   },
   "api": {
     "playground": {
