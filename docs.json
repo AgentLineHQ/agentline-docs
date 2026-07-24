@@ -60,7 +60,7 @@
   },
   "footer": {
     "socials": {
-      "website": "https://agentline.ai",
+      "website": "https://agentline.cloud",
       "github": "https://github.com/AgentLineHQ"
     },
     "links": [
@@ -83,7 +83,7 @@
         "header": "More",
         "items": [
           { "label": "API Reference", "href": "/api-reference" },
-          { "label": "Support", "href": "mailto:support@agentline.ai" }
+          { "label": "Support", "href": "mailto:support@agentline.cloud" }
         ]
       }
     ]

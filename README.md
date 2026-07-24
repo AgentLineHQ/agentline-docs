@@ -60,7 +60,7 @@ triggers a docs redeploy.
 1. Go to <https://dashboard.mintlify.com> → **Add project** → connect this
    GitHub repo.
 2. Set the deployment branch to `main`. Mintlify deploys on every push.
-3. (Optional) Add a custom domain (e.g. `docs.agentline.ai`) in the dashboard.
+3. (Optional) Add a custom domain (e.g. `docs.agentline.cloud`) in the dashboard.
 
 No build command is needed — Mintlify builds and hosts the site for you.
 
