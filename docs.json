@@ -51,10 +51,33 @@
     ]
   },
   "footer": {
+    "socials": {
+      "website": "https://agentline.ai",
+      "github": "https://github.com/AgentLineHQ"
+    },
     "links": [
-      { "name": "Website", "href": "https://agentline.ai" },
-      { "name": "SDKs", "href": "https://github.com/AgentLineHQ" },
-      { "name": "Support", "href": "mailto:support@agentline.ai" }
+      {
+        "header": "Docs",
+        "items": [
+          { "label": "Introduction", "href": "/introduction" },
+          { "label": "Quickstart", "href": "/quickstart" },
+          { "label": "Authentication", "href": "/authentication" }
+        ]
+      },
+      {
+        "header": "SDKs",
+        "items": [
+          { "label": "Python", "href": "/sdk/python" },
+          { "label": "Node", "href": "/sdk/node" }
+        ]
+      },
+      {
+        "header": "More",
+        "items": [
+          { "label": "API Reference", "href": "/api-reference" },
+          { "label": "Support", "href": "mailto:support@agentline.ai" }
+        ]
+      }
     ]
   }
 }
