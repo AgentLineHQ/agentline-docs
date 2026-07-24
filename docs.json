@@ -8,6 +8,7 @@
     "light": "#F87171",
     "dark": "#B91C1C"
   },
+  "favicon": "/images/favicon.png",
   "api": {
     "playground": {
       "display": "interactive"
