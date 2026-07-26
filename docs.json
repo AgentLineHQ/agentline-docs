@@ -14,6 +14,20 @@
     "dark": "/images/favicon.png",
     "href": "https://agentline.cloud"
   },
+  "anchors": [
+    {
+      "name": "Discord",
+      "url": "https://discord.gg/69SVE2jWNr",
+      "icon": "discord",
+      "iconType": "brand"
+    },
+    {
+      "name": "support@agentline.cloud",
+      "url": "mailto:support@agentline.cloud",
+      "icon": "envelope",
+      "iconType": "solid"
+    }
+  ],
   "api": {
     "playground": {
       "display": "interactive"
@@ -61,7 +75,8 @@
   "footer": {
     "socials": {
       "website": "https://agentline.cloud",
-      "github": "https://github.com/AgentLineHQ"
+      "github": "https://github.com/AgentLineHQ",
+      "discord": "https://discord.gg/69SVE2jWNr"
     },
     "links": [
       {
