@@ -10,24 +10,21 @@
   },
   "favicon": "/images/favicon.png",
   "logo": {
-    "light": "/images/favicon.png",
-    "dark": "/images/favicon.png",
+    "light": "/images/logo-light.svg",
+    "dark": "/images/logo-dark.svg",
     "href": "https://agentline.cloud"
   },
-  "anchors": [
-    {
-      "name": "Discord",
-      "url": "https://discord.gg/69SVE2jWNr",
-      "icon": "discord",
-      "iconType": "brand"
-    },
-    {
-      "name": "support@agentline.cloud",
-      "url": "mailto:support@agentline.cloud",
-      "icon": "envelope",
-      "iconType": "solid"
+  "navbar": {
+    "links": [
+      { "type": "discord", "href": "https://discord.gg/69SVE2jWNr" },
+      { "label": "Support", "href": "mailto:support@agentline.cloud", "icon": "envelope", "iconType": "solid" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "/quickstart"
     }
-  ],
+  },
   "api": {
     "playground": {
       "display": "interactive"
