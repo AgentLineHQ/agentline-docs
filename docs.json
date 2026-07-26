@@ -22,7 +22,7 @@
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "/quickstart"
+      "href": "https://agentline.cloud/signup"
     }
   },
   "api": {
