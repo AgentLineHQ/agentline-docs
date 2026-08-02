@@ -15,7 +15,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Every page starts with frontmatter `title` and `description`.
 - Use H1 (`#`) once per page for the title; H2 (`##`) for sections.
 - Phone numbers are always E.164, e.g. `+12125557890`.
-- API keys are always `sk_live_...`. Never put a real key in examples.
+- API keys are always `al_live_...`. Never put a real key in examples.
 - Prefer the SDK in examples (Python + Node via `<CodeGroup>`), then a `curl`
   tab when helpful. Mirror the resource/method names from the API Reference
   (e.g. `client.calls.hangup(...)`, `client.calls.hangup(...)` in Node).
@@ -27,7 +27,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - To **add a page**: create the `.mdx` file AND add its path (no extension) to
   `docs.json` under the right `navigation` group. Both are required.
 - To **reorder**: edit `navigation` arrays in `docs.json`.
-- Never edit the `api-reference/` pages — they regenerate from `openapi.json`.
+- Never edit the `api-reference/` pages â€” they regenerate from `openapi.json`.
 - To change what endpoints appear, edit
   `SDK_SURFACE` in the `agentline-sdks` repo, not this repo.
 

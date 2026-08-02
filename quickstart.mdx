@@ -23,7 +23,7 @@ required).
   ```
 </CodeGroup>
 
-The verify response returns `api_key` (shown once — store it). New accounts
+The verify response returns `api_key` (shown once â€” store it). New accounts
 get a sign-up credit to start.
 
 ## 2. Use the SDK
@@ -32,7 +32,7 @@ get a sign-up credit to start.
   ```python
   from agentline_ai import AgentLine
 
-  client = AgentLine(api_key="sk_live_...")
+  client = AgentLine(api_key="al_live_...")
 
   agent = client.agents.create(
       name="Support Bot",
@@ -47,7 +47,7 @@ get a sign-up credit to start.
   ```javascript
   import { AgentLineClient } from "agentline";
 
-  const client = new AgentLineClient({ apiKey: "sk_live_..." });
+  const client = new AgentLineClient({ apiKey: "al_live_..." });
 
   const agent = await client.agents.create({
       name: "Support Bot",

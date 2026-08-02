@@ -1,6 +1,6 @@
 ---
 title: Authentication
-description: Every request uses a Bearer API key (sk_live_...).
+description: Every request uses a Bearer API key (al_live_...).
 ---
 
 # Authentication
@@ -8,7 +8,7 @@ description: Every request uses a Bearer API key (sk_live_...).
 AgentLine uses **Bearer API keys**. Every authenticated request needs:
 
 ```
-Authorization: Bearer sk_live_xxxxxxxxxxxx
+Authorization: Bearer al_live_xxxxxxxxxxxx
 ```
 
 ## Getting a key
@@ -30,7 +30,7 @@ Sign-up and sign-in use the same email one-time-code flow:
   </Step>
 </Steps>
 
-The same email always resolves to the same account — an agent that signs up
+The same email always resolves to the same account â€” an agent that signs up
 and a human who later signs in land on the identical account.
 
 ## Managing keys
@@ -57,14 +57,14 @@ and a human who later signs in land on the identical account.
 <CodeGroup>
   ```python
   from agentline_ai import AgentLine
-  client = AgentLine(api_key="sk_live_...")
+  client = AgentLine(api_key="al_live_...")
   ```
   ```javascript
   import { AgentLineClient } from "agentline";
-  const client = new AgentLineClient({ apiKey: "sk_live_..." });
+  const client = new AgentLineClient({ apiKey: "al_live_..." });
   ```
   ```bash
   curl https://api.agentline.cloud/v1/agents \
-    -H "Authorization: Bearer sk_live_..."
+    -H "Authorization: Bearer al_live_..."
   ```
 </CodeGroup>
