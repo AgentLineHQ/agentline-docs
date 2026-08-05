@@ -60,16 +60,20 @@ to the exact `turn_id` from that event.
 
 <CodeGroup>
   ```python
-  client.calls.push_context(call.id, turn_id="turn_xxx", context="Their order ships Tuesday.")
+  client.calls.push_context(call.id, turn_id="turn_xxx", context="Your order ships Tuesday.")
   ```
   ```javascript
-  await client.calls.pushContext(call.id, { turnId: "turn_xxx", context: "Their order ships Tuesday." });
+  await client.calls.pushContext(call.id, { turnId: "turn_xxx", context: "Your order ships Tuesday." });
   ```
 </CodeGroup>
 
 Returns `delivered=true` with `status: "live"` or `"duplicate"`. A **409** means
 the turn is stale or cancelled; a **410** means the call has ended. Never reuse
 context from one turn for another.
+
+The response is spoken verbatim and then retained as the assistant turn in the
+call conversation. Keep it caller-ready and concise. The hosted LLM is only a
+fallback if direct TTS fails.
 
 <Note>
   Transcripts are a list of `{role, text, timestamp}` turns where
