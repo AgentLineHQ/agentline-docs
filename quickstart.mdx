@@ -61,9 +61,24 @@ get a sign-up credit to start.
   ```
 </CodeGroup>
 
-## 3. Get the results
+## 3. Install live event delivery
 
-Poll for events (call completions + transcripts), or receive them via webhook.
+If the agent has terminal access, download and install the persistent relay:
+
+```bash
+curl -fsSL https://api.agentline.cloud/static/agentline_relay.py -o agentline_relay.py
+python agentline_relay.py install --agent-id agt_xxx
+```
+
+The installer detects Hermes, OpenClaw, Claude Code, or Codex, preserves one
+runtime session per phone call, reconnects automatically, and installs a user
+service. Runtime package/service installation may require one safety approval.
+Use a [webhook](/guides/webhooks) if the agent cannot run a persistent process.
+
+## 4. Get the results
+
+Use the relay for live turns and durable event delivery. Poll the mailbox only
+as a fallback, or receive non-live events via webhook.
 
 <CodeGroup>
   ```python

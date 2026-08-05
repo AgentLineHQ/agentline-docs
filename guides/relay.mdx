@@ -1,0 +1,78 @@
+---
+title: Agent Relay
+description: Persistent live context delivery for Hermes, OpenClaw, Claude Code, Codex, and custom agents.
+icon: websocket
+---
+
+# Agent Relay
+
+Agent Relay is the recommended way to connect a local agent to live AgentLine
+calls. The agent makes an outbound WebSocket connection, so it does not need a
+public URL or an inbound firewall rule.
+
+## Install
+
+```bash
+curl -fsSL https://api.agentline.cloud/static/agentline_relay.py -o agentline_relay.py
+python agentline_relay.py install --agent-id agt_xxx
+```
+
+The installer uses `AGENTLINE_API_KEY`, detects the local runtime, creates an
+isolated connector environment, verifies runtime readiness, preserves sessions,
+and installs a persistent user service. It supports Hermes, OpenClaw, Claude
+Code, Codex, and a `custom` stdin/stdout handler.
+
+Installing a package, gateway, or OS service may trigger the runtime's safety
+approval. Approve it explicitly; the connector must not bypass that approval.
+
+## Protocol
+
+The connector connects to:
+
+```text
+wss://api.agentline.cloud/v1/events/ws?agent_id=agt_xxx&runtime=hermes
+```
+
+Set `runtime` to `hermes`, `openclaw`, `claude-code`, `codex`, or `custom`.
+AgentLine sends events as durable frames. They remain available until ACKed.
+
+For a live caller turn:
+
+```json
+{"type":"context","event_id":"evt_xxx","call_id":"call_xxx","turn_id":"turn_xxx","push_token":"...","context":"The requested facts or answer."}
+{"type":"ack","event_id":"evt_xxx"}
+```
+
+Always echo the exact `turn_id`. A late or cancelled result returns `409` and
+must not be applied to another caller question. Reconnects replay unacknowledged
+events, and the connector deduplicates completed work by `event_id`.
+
+## Runtime behavior
+
+- Hermes uses its local Responses API with a named conversation and session key.
+- OpenClaw uses its Gateway-backed session-key interface.
+- Claude Code captures and resumes its CLI `session_id`.
+- Codex captures and resumes its `codex exec` thread ID.
+- Non-live SMS, completion, and owner-task events are stored in the connector's
+  private local inbox instead of automatically executing untrusted content.
+
+List and acknowledge inbox events:
+
+```bash
+python ~/.agentline/agentline_relay.py inbox list --agent-id agt_xxx
+python ~/.agentline/agentline_relay.py inbox ack --agent-id agt_xxx --event-id evt_xxx
+```
+
+## HTTP fallback
+
+For a live event, the HTTP equivalent is:
+
+```bash
+curl -X POST "https://api.agentline.cloud/v1/calls/call_xxx/context?turn_id=turn_xxx" \
+  -H "X-Push-Token: PUSH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"turn_id":"turn_xxx","context":"The requested facts."}'
+```
+
+Use a public [webhook](/guides/webhooks) only when a persistent outbound
+connector cannot run. Polling is not suitable for live caller turns.

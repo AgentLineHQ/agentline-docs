@@ -54,6 +54,7 @@
               "guides/calls",
               "guides/messages",
               "guides/events",
+              "guides/relay",
               "guides/webhooks"
             ]
           },

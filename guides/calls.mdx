@@ -53,21 +53,23 @@ provided). Returns a `call_id` you use to control and inspect the call.
 
 ## Pushing context to a live call (relay mode)
 
-If your backend (Hermes, OpenClaw, etc.) needs to answer a live caller after a
-`call.utterance` event, push the answer with `push_context`. Authenticate with
-the `push_token` from the event (no API key needed) **or** a Bearer key.
+If your backend (Hermes, OpenClaw, Claude Code, Codex, or another agent) needs
+to answer a live caller after a `call.utterance` event, use the persistent
+[Agent Relay](/guides/relay) or push context over HTTP. Every response is bound
+to the exact `turn_id` from that event.
 
 <CodeGroup>
   ```python
-  client.calls.push_context(call.id, context="Their order ships Tuesday.")
+  client.calls.push_context(call.id, turn_id="turn_xxx", context="Their order ships Tuesday.")
   ```
   ```javascript
-  await client.calls.pushContext(call.id, { context: "Their order ships Tuesday." });
+  await client.calls.pushContext(call.id, { turnId: "turn_xxx", context: "Their order ships Tuesday." });
   ```
 </CodeGroup>
 
-Returns `delivered=true` with `status` of `live` or `buffered`. A **410**
-means the call has ended — abandon the in-flight lookup.
+Returns `delivered=true` with `status: "live"` or `"duplicate"`. A **409** means
+the turn is stale or cancelled; a **410** means the call has ended. Never reuse
+context from one turn for another.
 
 <Note>
   Transcripts are a list of `{role, text, timestamp}` turns where

@@ -1,15 +1,18 @@
 ---
 title: Events
-description: Poll a consume-once mailbox for call/SMS events.
+description: Receive durable live events through the Agent Relay or fallback mailbox.
 icon: inbox
 ---
 
 # Events
 
-If you can't expose a public webhook, poll the **event mailbox**. When calls
-complete (with transcripts) or messages arrive, events land here.
+For live caller turns, use the outbound **Agent Relay**. It reconnects, retains
+events until ACK, and works without a public inbound URL. Use the mailbox for
+non-live fallback awareness when neither relay nor webhook is available.
 
-## Poll (consume once)
+See [Agent Relay](/guides/relay) for the two-command runtime setup.
+
+## Poll (fallback, consume once)
 
 `poll` returns pending events **and deletes them** — treat it as a
 one-time read.
@@ -27,7 +30,8 @@ one-time read.
 </CodeGroup>
 
 Each event has `{ event_id, agent_id, event_type, payload, created_at }`.
-Common `event_type`s include `call.completed`, `call.failed`, `sms.received`.
+Common `event_type`s include `call.utterance`, `call.completed`, `call.failed`,
+`call.owner_task`, and `sms.received`.
 
 ## Peek (non-destructive)
 
@@ -44,6 +48,6 @@ committing to retrieve.
 </CodeGroup>
 
 <Tip>
-  Prefer [webhooks](/guides/webhooks) for low-latency delivery; use the
-  mailbox for local dev, serverless, or environments without an inbound URL.
+  Prefer [Agent Relay](/guides/relay) for live calls, then [webhooks](/guides/webhooks)
+  for a public inbound integration. Use the mailbox for fallback polling only.
 </Tip>
