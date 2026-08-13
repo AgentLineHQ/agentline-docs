@@ -17,6 +17,7 @@ behavior. Every number and call belongs to an agent.
       system_prompt="You are a helpful assistant. Be concise.",
       initial_greeting="Hi, this is Support. How can I help?",
       voice_id="female-1",
+      voicemail_message="Hi, this is Support calling about your request. Please call us back at 555-0100.",
   )
   ```
   ```javascript
@@ -25,6 +26,7 @@ behavior. Every number and call belongs to an agent.
       systemPrompt: "You are a helpful assistant. Be concise.",
       initialGreeting: "Hi, this is Support. How can I help?",
       voiceId: "female-1",
+      voicemailMessage: "Hi, this is Support calling about your request. Please call us back at 555-0100.",
   });
   ```
 </CodeGroup>
@@ -36,8 +38,31 @@ behavior. Every number and call belongs to an agent.
 | `initial_greeting` | Opening line spoken when a call connects |
 | `voice_id` | TTS preset (`female-1`) or Cartesia UUID |
 | `transfer_number` | E.164 number to transfer calls to |
-| `voicemail_message` | Message left if the call hits voicemail |
+| `voicemail_message` | Spoken message left on outbound voicemail. **Required** if the agent should leave a mailbox message; without it the agent hangs up. |
 | `owner_phone` | Owner number — calls from it enter "task mode" |
+
+## Leaving voicemail
+
+On outbound calls the pipeline detects a mailbox and leaves `voicemail_message`:
+
+- **Greeting** — *"You've reached…"*, *"12418174 is not available"*, *"leave a message after the beep"*. The agent does **not** press keys. It waits for the beep, speaks the message, and hangs up.
+- **Record-key menu** — *"To disconnect, press 1. To record your message, press 2."* The agent presses **2**, waits for the beep, then leaves the same message. If `voicemail_message` is unset it presses disconnect instead.
+
+Include who you are, why you're calling, and a callback number. Do **not** add "stay silent on automated messages" or "hang up if you hear press 1" to the system prompt — that fights the built-in handler.
+
+<CodeGroup>
+  ```python
+  client.agents.update(
+      agent.id,
+      voicemail_message="Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+  )
+  ```
+  ```javascript
+  await client.agents.update(agent.id, {
+      voicemailMessage: "Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+  });
+  ```
+</CodeGroup>
 
 ## Manage agents
 

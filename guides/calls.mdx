@@ -34,6 +34,22 @@ text that is spoken back (TTS). The full transcript is saved automatically.
 The call is placed from the agent's assigned number (or `from_number_id` if
 provided). Returns a `call_id` you use to control and inspect the call.
 
+Outbound calls **listen first**. The pipeline classifies what picked up:
+
+| What it hears | What it does |
+|---------------|--------------|
+| Live human (*"Hello?"*) | Introduces itself from `initial_greeting` |
+| Voicemail greeting (*"X is not available"*, *"leave a message"*) | Waits for the beep, leaves `voicemail_message`, hangs up |
+| Voicemail key menu (*"press 2 to record"*) | Presses **2**, then leaves `voicemail_message` |
+| IVR (*"Press 1 for sales"*) | Sends a real DTMF tone for a key the menu actually offered. `0` is used only if the menu listed it. |
+| Call screening (*"State your name"*) | States name and purpose |
+
+<Warning>
+  The agent leaves a voicemail **only** if `voicemail_message` is set on the
+  agent (`PATCH /v1/agents`). Without it, a mailbox greeting hangs up and a
+  "press 2 to record" menu presses disconnect. See [Agents](/guides/agents).
+</Warning>
+
 ## Control and inspect
 
 <CodeGroup>
