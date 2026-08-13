@@ -151,7 +151,7 @@
           "Agents"
         ],
         "summary": "Create Agent",
-        "description": "Create a new AI voice agent for telephony.\n\nSets up a new AI phone agent with a custom system prompt, voice,\nand greeting. Once created, buy a phone number and attach it to\nthis agent so it can make and receive calls autonomously.\n\nFields:\n  - name: Display name for the agent\n  - system_prompt: Instructions that define the agent's personality and behavior on calls\n  - initial_greeting: What the AI agent says when the call connects\n  - voice_id: TTS voice preset (e.g. \"female-1\") or Cartesia UUID\n  - transfer_number: Phone number to transfer calls to (e.g. a human operator)\n  - voicemail_message: Spoken message left on outbound voicemail. Required to actually leave a mailbox message; if unset the agent hangs up.",
+        "description": "Create a new AI voice agent for telephony.\n\nSets up a new AI phone agent with a custom system prompt, voice,\nand greeting. Once created, buy a phone number and attach it to\nthis agent so it can make and receive calls autonomously.\n\nFields:\n  - name: Display name for the agent\n  - system_prompt: Instructions that define the agent's personality and behavior on calls\n  - initial_greeting: What the AI agent says when the call connects\n  - voice_id: TTS voice preset (e.g. \"female-1\") or Cartesia UUID\n  - transfer_number: Phone number to transfer calls to (e.g. a human operator)\n  - voicemail_message: Message the agent leaves if the call goes to voicemail",
         "operationId": "create_agent",
         "requestBody": {
           "content": {
@@ -1902,7 +1902,7 @@
               }
             ],
             "title": "Voicemail Message",
-            "description": "Spoken message left on outbound voicemail (mailbox greeting or 'press 2 to record'). Required to actually leave a message; if unset the agent hangs up instead."
+            "description": "Message the AI agent leaves if the call goes to voicemail"
           },
           "owner_phone": {
             "anyOf": [
@@ -1999,7 +1999,7 @@
               }
             ],
             "title": "Voicemail Message",
-            "description": "Spoken message left on outbound voicemail. Empty means the agent hangs up on a mailbox instead of leaving a message."
+            "description": "Message left on voicemail"
           },
           "owner_phone": {
             "anyOf": [
@@ -2101,7 +2101,7 @@
               }
             ],
             "title": "Voicemail Message",
-            "description": "Updated spoken message left on outbound voicemail. Set this so mailbox greetings and 'press 2 to record' menus leave a message instead of hanging up."
+            "description": "Updated voicemail message"
           },
           "owner_phone": {
             "anyOf": [
