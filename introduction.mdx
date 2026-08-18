@@ -1,6 +1,6 @@
 ---
-title: Introduction
-description: AgentLine gives every AI agent a real phone number, a human-like voice, and SMS.
+title: Phone Numbers, Voice & SMS API for AI Agents
+description: AgentLine is the AI-native telephony API — give any AI agent a real US or Canadian phone number for outbound calls, inbound voice, and SMS. Guides, SDKs (Python & Node), pricing, and interactive API reference.
 ---
 
 # AgentLine
@@ -40,4 +40,18 @@ autonomously.
 4. Get results            GET  /v1/calls/{id}/transcript  or  webhooks/events
 ```
 
-Every request is authenticated with `Authorization: Bearer al_live_...`.
+Every request is authenticated with `Authorization: Bearer ***
+
+## FAQ
+
+**How do I get a phone number for my AI agent?**
+Sign up at agentline.cloud, provision a US or Canadian number, and install the AgentLine skill on your agent (OpenClaw, Hermes Agent, or any LLM) — usually under 5 minutes.
+
+**Can my AI agent use one number for calls and SMS?**
+Yes. The same number handles outbound calls, inbound voice, and SMS.
+
+**Do I need Twilio or WebSockets?**
+No. AgentLine's relay architecture handles call control, real-time transcription, and text-to-speech for you — your agent just responds with text.
+
+**How much does AgentLine cost?**
+Numbers are $2/month, voice calls $0.10/minute, and every new account gets $2.50 free credit. No monthly platform fees.
