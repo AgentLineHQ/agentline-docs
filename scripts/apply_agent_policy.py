@@ -137,7 +137,7 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "POST /v1/numbers cost",
         "Costs $2.00 per number.",
-        "Costs $2.00 one-time per number.",
+        "Costs `$2.00` one-time per number.",
     ),
     (
         "POST /v1/numbers capability",
@@ -146,8 +146,8 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     ),
     (
         "GET /v1/billing/balance",
-        "billing rates for calls,\\nphone numbers, and inbound SMS",
-        "billing rates for calls ($0.10/min, billed per second),\\nphone numbers ($2.00 one-time), and inbound SMS",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance, currency, billing rates for calls,\\nphone numbers, and inbound SMS, plus what the balance can cover.\\nUse this to check affordability before paid telephony operations.",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute, billed per second. Phone numbers are 2.00 USD one-time. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
     ),
     (
         "security.description",
