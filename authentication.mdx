@@ -11,6 +11,8 @@ AgentLine uses **Bearer API keys**. Every authenticated request needs:
 Authorization: Bearer al_live_xxxxxxxxxxxx
 ```
 
+Keys use the `al_live_...` prefix. Legacy keys prefixed `sk_live_...` still work.
+
 ## Getting a key
 
 Sign-up and sign-in use the same email one-time-code flow:
@@ -68,3 +70,9 @@ and a human who later signs in land on the identical account.
     -H "Authorization: Bearer al_live_..."
   ```
 </CodeGroup>
+
+## MCP
+
+MCP clients use the same Bearer key against
+`https://api.agentline.cloud/mcp` via `mcp-remote`. See [MCP](/guides/mcp).
+Outbound SMS is not an MCP tool.

@@ -29,7 +29,7 @@ The client is grouped by resource, mirroring the [API Reference](/api-reference)
 client.agents     # create, list, get, update, delete
 client.numbers    # buy, list, get, reassign
 client.calls      # create, list, get, get_transcript, hangup, push_context
-client.messages   # send, list, list_conversations
+client.messages   # list, list_conversations
 client.events     # poll, peek
 client.webhooks   # list, set, delete, test
 client.billing    # get_balance, get_expenditure, get_summary, ...
@@ -55,6 +55,12 @@ client.calls.hangup(call.id)
 
 print(client.calls.get_transcript(call.id))
 ```
+
+<Warning>
+  Outbound SMS is not enabled for agents. Do not call `client.messages.send`.
+  That operation is not exposed on MCP. List inbound messages with
+  `client.messages.list`.
+</Warning>
 
 The SDK is generated from the same OpenAPI spec as this API reference, so the
 SDK and docs always match.

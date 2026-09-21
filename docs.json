@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "AgentLine",
-  "description": "Phone numbers, voice, and SMS for AI agents. Documentation, SDKs, and API reference.",
+  "description": "US phone numbers and voice for AI agents. Inbound SMS can be read. Documentation, SDKs, and API reference.",
   "colors": {
     "primary": "#DC2626",
     "light": "#F87171",
@@ -53,6 +53,7 @@
               "guides/numbers",
               "guides/calls",
               "guides/messages",
+              "guides/mcp",
               "guides/events",
               "guides/relay",
               "guides/webhooks"

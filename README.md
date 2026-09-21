@@ -111,6 +111,13 @@ expose, hide, or rename an endpoint, change the **source of truth**: the
 The daily CI job pulls the refreshed spec into this repo, and Mintlify
 regenerates the pages.
 
+The upstream spec still includes `POST /v1/messages`. After each fetch,
+`scripts/apply_agent_policy.py` stamps the production skill policy onto that
+operation and the auth scheme: outbound SMS is not enabled for agents and is
+not an MCP tool, keys are `al_live_...` (legacy `sk_live_...` still works),
+and a US number is $2.00 one-time. Do not remove that step; without it the
+generated reference tells agents to send SMS.
+
 ### Use the AI agent
 
 Mintlify ships an AI agent (dashboard + `AGENTS.md`). Open the editor in the

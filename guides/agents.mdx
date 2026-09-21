@@ -36,7 +36,7 @@ behavior. Every number and call belongs to an agent.
 | `name` | Display name |
 | `system_prompt` | Default instructions for all calls |
 | `initial_greeting` | Opening line spoken when a call connects |
-| `voice_id` | TTS preset (`female-1`) or Cartesia UUID |
+| `voice_id` | TTS preset or Cartesia UUID. Presets: `female-1` (friendly), `female-2` (reassuring), `female-3` (guide), `male-1` (supportive), `male-2` (thinker), `male-3` (helpful) |
 | `transfer_number` | E.164 number to transfer calls to |
 | `voicemail_message` | Spoken message left on outbound voicemail. **Required** if the agent should leave a mailbox message; without it the agent hangs up. |
 | `owner_phone` | Owner number — calls from it enter "task mode" |

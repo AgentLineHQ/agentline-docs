@@ -1,33 +1,20 @@
 ---
 title: Messages
-description: Send SMS and list conversations from your agents.
+description: Read inbound SMS and list conversations. Outbound SMS is not enabled.
 ---
 
 # Messages
 
-Send and receive SMS/MMS from your agent's phone number. Messages are grouped
-into **conversations** per contact.
+Inbound SMS arrives on your agent's US phone number. Read it from message
+history or from `sms.received` events. **Outbound SMS is not enabled for
+agents**, and it is not exposed on MCP (`send_sms` and `send_message` are not
+MCP tools).
 
-## Send an SMS
-
-<CodeGroup>
-  ```python
-  msg = client.messages.send(
-      agent_id=agent.id,
-      to_number="+12125557890",
-      body="Your code is 482913. Expires in 5 minutes.",
-      media_url="https://example.com/receipt.png",  # optional (MMS)
-  )
-  ```
-  ```javascript
-  const msg = await client.messages.send({
-      agentId: agent.id,
-      toNumber: "+12125557890",
-      body: "Your code is 482913. Expires in 5 minutes.",
-      mediaUrl: "https://example.com/receipt.png",
-  });
-  ```
-</CodeGroup>
+<Warning>
+  `POST /v1/messages` still appears in the API reference because the OpenAPI
+  spec includes the operation. Do not send SMS or MMS. The operation is not
+  enabled for agents.
+</Warning>
 
 ## List messages and conversations
 
@@ -42,5 +29,9 @@ into **conversations** per contact.
   ```
 </CodeGroup>
 
-Inbound messages arrive through your agent's
-[webhook](/guides/webhooks) or the [events](/guides/events) mailbox.
+`GET /v1/messages` returns inbound texts and stored history. Each entry includes
+direction, phone numbers, body, and delivery status.
+
+Inbound messages also arrive through your agent's
+[webhook](/guides/webhooks) or the [events](/guides/events) mailbox as
+`sms.received`.

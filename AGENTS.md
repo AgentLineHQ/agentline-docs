@@ -15,7 +15,11 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Every page starts with frontmatter `title` and `description`.
 - Use H1 (`#`) once per page for the title; H2 (`##`) for sections.
 - Phone numbers are always E.164, e.g. `+12125557890`.
-- API keys are always `al_live_...`. Never put a real key in examples.
+- API keys are always `al_live_...` (legacy `sk_live_...` still works). Never put a real key in examples.
+- Phone numbers are **US only** and cost **$2.00 one-time**. Calls are **$0.10/min**, billed per second. Do not document Canada, a monthly number fee, `$0.08/min`, or `$0.02/msg`.
+- **Outbound SMS is not enabled for agents.** Document inbound SMS and message listing only. `POST /v1/messages` may remain in the generated API reference; say it is not enabled and is not an MCP tool. Do not list `send_sms` or `send_message` as MCP tools.
+- MCP is `https://api.agentline.cloud/mcp` via `mcp-remote` and a Bearer key.
+- Voice presets are `female-1`, `female-2`, `female-3`, `male-1`, `male-2`, and `male-3`.
 - Prefer the SDK in examples (Python + Node via `<CodeGroup>`), then a `curl`
   tab when helpful. Mirror the resource/method names from the API Reference
   (e.g. `client.calls.hangup(...)`, `client.calls.hangup(...)` in Node).

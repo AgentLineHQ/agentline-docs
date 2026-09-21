@@ -25,7 +25,7 @@ The client is grouped by resource, mirroring the [API Reference](/api-reference)
 client.agents     // create, list, get, update, delete
 client.numbers    // buy, list, get, reassign
 client.calls      // create, list, get, getTranscript, hangup, pushContext
-client.messages   // send, list, listConversations
+client.messages   // list, listConversations
 client.events     // poll, peek
 client.webhooks   // list, set, delete, test
 client.billing    // getBalance, getExpenditure, getSummary, ...
@@ -51,6 +51,12 @@ await client.calls.hangup(call.id);
 
 console.log(await client.calls.getTranscript(call.id));
 ```
+
+<Warning>
+  Outbound SMS is not enabled for agents. Do not call `client.messages.send`.
+  That operation is not exposed on MCP. List inbound messages with
+  `client.messages.list`.
+</Warning>
 
 The SDK is generated from the same OpenAPI spec as this API reference, so the
 SDK and docs always match. Works on Node 18+, Vercel, Cloudflare Workers, Deno,

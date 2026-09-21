@@ -53,6 +53,7 @@ jobs:
             https://raw.githubusercontent.com/AgentLineHQ/agentline-sdks/main/fern/openapi/openapi.json \
             -o openapi.json
           echo "Spec fetched: $(jq '.paths | length') paths"
+          python scripts/apply_agent_policy.py
 
       - name: Commit if changed
         run: |
