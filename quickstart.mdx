@@ -26,7 +26,10 @@ required).
 The verify response returns `api_key` (shown once â€” store it). New accounts
 get a sign-up credit to start.
 
-## 2. Use the SDK
+## 2. Call the API
+
+Python is published as `agentline-ai`. The Node package is not on npm yet, so
+the JavaScript example uses `fetch`.
 
 <CodeGroup>
   ```python
@@ -45,17 +48,32 @@ get a sign-up credit to start.
   print("Call started:", call.id)
   ```
   ```javascript
-  import { AgentLineClient } from "agentline";
+  const headers = {
+    Authorization: "Bearer al_live_...",
+    "Content-Type": "application/json",
+  };
 
-  const client = new AgentLineClient({ apiKey: "al_live_..." });
-
-  const agent = await client.agents.create({
+  const agent = await fetch("https://api.agentline.cloud/v1/agents", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
       name: "Support Bot",
-      systemPrompt: "You are a helpful assistant.",
-      initialGreeting: "Hello! How can I help?",
+      system_prompt: "You are a helpful assistant.",
+      initial_greeting: "Hello! How can I help?",
+    }),
+  }).then((res) => res.json());
+
+  await fetch("https://api.agentline.cloud/v1/numbers", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ agent_id: agent.id, country: "US", area_code: "415" }),
   });
-  await client.numbers.buy({ agentId: agent.id, country: "US", areaCode: "415" });
-  const call = await client.calls.create({ agentId: agent.id, toNumber: "+12125557890" });
+
+  const call = await fetch("https://api.agentline.cloud/v1/calls", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ agent_id: agent.id, to_number: "+12125557890" }),
+  }).then((res) => res.json());
 
   console.log("Call started:", call.id);
   ```
@@ -85,13 +103,15 @@ as a fallback, or receive non-live events via webhook.
   events = client.events.poll()
   ```
   ```javascript
-  const events = await client.events.poll();
+  const events = await fetch("https://api.agentline.cloud/v1/events", {
+    headers: { Authorization: "Bearer al_live_..." },
+  }).then((res) => res.json());
   ```
 </CodeGroup>
 
 <Tip>
   All phone numbers are E.164 format, e.g. `+12125557890`. Numbers are US only
-  and cost \$2.00 one-time. Each agent can have one active number at a time.
+  and cost \$2.00/month per number. Each agent can have one active number at a time.
 </Tip>
 
 Next: read [Authentication](/authentication) and the [Agents guide](/guides/agents).

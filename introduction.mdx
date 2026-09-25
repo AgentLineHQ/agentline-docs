@@ -20,7 +20,7 @@ can be read. Outbound SMS is not enabled for agents.
     `pip install agentline-ai`
   </Card>
   <Card title="Node SDK" icon="/images/node.svg" href="/sdk/node">
-    `npm i agentline`
+    Not on npm yet. Use REST.
   </Card>
 </CardGroup>
 
@@ -28,7 +28,7 @@ can be read. Outbound SMS is not enabled for agents.
 
 - **AI phone agents** that answer and place real calls.
 - **Outbound dialers** for sales, follow-ups, and reminders.
-- **AI receptionists** that route and transfer calls.
+- **AI receptionists** that answer calls and can transfer the caller to the owner's phone.
 - **Inbound SMS** that your agent can read from its number.
 
 ## How it works
@@ -54,7 +54,7 @@ The same US number handles outbound calls, inbound voice, and inbound SMS. Outbo
 No. AgentLine's relay architecture handles call control, real-time transcription, and text-to-speech for you — your agent just responds with text.
 
 **How much does AgentLine cost?**
-A US number is \$2.00 one-time. Voice calls are \$0.10/minute, billed per second. No monthly platform fees.
+US numbers are \$2.00/month per number. Voice calls are \$0.10/minute, billed per second. No monthly platform fees.
 
 **How do agents connect over MCP?**
 Point an MCP client at `https://api.agentline.cloud/mcp` with [`mcp-remote`](/guides/mcp) and a Bearer key. `send_sms` and `send_message` are not MCP tools.

@@ -62,8 +62,9 @@ and a human who later signs in land on the identical account.
   client = AgentLine(api_key="al_live_...")
   ```
   ```javascript
-  import { AgentLineClient } from "agentline";
-  const client = new AgentLineClient({ apiKey: "al_live_..." });
+  const res = await fetch("https://api.agentline.cloud/v1/agents", {
+    headers: { Authorization: "Bearer al_live_..." },
+  });
   ```
   ```bash
   curl https://api.agentline.cloud/v1/agents \

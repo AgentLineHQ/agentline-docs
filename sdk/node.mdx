@@ -1,63 +1,71 @@
 ---
 title: Node SDK
-description: Use AgentLine from TypeScript / JavaScript.
+description: The Node SDK is not on npm yet. Call the REST API with fetch.
 icon: node-js
 iconType: brands
 ---
 
 # Node SDK
 
-```bash
-npm i agentline
-```
+The Node package is not on npm yet. `npm i agentline` returns 404. Call the
+REST API with `fetch` until a package is published. Python is
+`pip install agentline-ai` (`from agentline_ai import AgentLine`).
 
-```typescript
-import { AgentLineClient } from "agentline";
+## Create an agent and place a call
 
-const client = new AgentLineClient({ apiKey: "al_live_..." });
-```
+```javascript
+const headers = {
+  Authorization: "Bearer al_live_...",
+  "Content-Type": "application/json",
+};
 
-## Resources
-
-The client is grouped by resource, mirroring the [API Reference](/api-reference):
-
-```typescript
-client.agents     // create, list, get, update, delete
-client.numbers    // buy, list, get, reassign
-client.calls      // create, list, get, getTranscript, hangup, pushContext
-client.messages   // list, listConversations
-client.events     // poll, peek
-client.webhooks   // list, set, delete, test
-client.billing    // getBalance, getExpenditure, getSummary, ...
-client.voice      // list, get, set, reset
-```
-
-## End-to-end example
-
-```typescript
-import { AgentLineClient } from "agentline";
-
-const client = new AgentLineClient({ apiKey: "al_live_..." });
-
-const agent = await client.agents.create({
+const agent = await fetch("https://api.agentline.cloud/v1/agents", {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
     name: "Support Bot",
-    systemPrompt: "You are a helpful assistant.",
-    initialGreeting: "Hello! How can I help you today?",
+    system_prompt: "You are a helpful assistant.",
+    initial_greeting: "Hello! How can I help you today?",
+  }),
+}).then((res) => res.json());
+
+await fetch("https://api.agentline.cloud/v1/numbers", {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    agent_id: agent.id,
+    country: "US",
+    area_code: "415",
+  }),
 });
-await client.numbers.buy({ agentId: agent.id, country: "US", areaCode: "415" });
 
-const call = await client.calls.create({ agentId: agent.id, toNumber: "+12125557890" });
-await client.calls.hangup(call.id);
+const call = await fetch("https://api.agentline.cloud/v1/calls", {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    agent_id: agent.id,
+    to_number: "+12125557890",
+  }),
+}).then((res) => res.json());
 
-console.log(await client.calls.getTranscript(call.id));
+await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/hangup`, {
+  method: "POST",
+  headers,
+});
+
+const transcript = await fetch(
+  `https://api.agentline.cloud/v1/calls/${call.id}/transcript`,
+  { headers },
+).then((res) => res.json());
+
+console.log(transcript);
 ```
 
 <Warning>
-  Outbound SMS is not enabled for agents. Do not call `client.messages.send`.
-  That operation is not exposed on MCP. List inbound messages with
-  `client.messages.list`.
+  Outbound SMS is not enabled for agents. Do not `POST /v1/messages`. That
+  operation is not exposed on MCP. List inbound messages with
+  `GET /v1/messages`.
 </Warning>
 
-The SDK is generated from the same OpenAPI spec as this API reference, so the
-SDK and docs always match. Works on Node 18+, Vercel, Cloudflare Workers, Deno,
-Bun, and React Native.
+US numbers cost \$2.00/month per number. Voice calls are \$0.10/minute, billed
+per second.

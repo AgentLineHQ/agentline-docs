@@ -135,9 +135,19 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
         },''',
     ),
     (
+        "GET /v1/billing/balance (previous policy)",
+        "Phone numbers are 2.00 USD one-time.",
+        "Phone numbers are 2.00 USD per month.",
+    ),
+    (
+        "POST /v1/numbers cost (previous policy)",
+        "Costs `$2.00` one-time per number.",
+        "Costs $2.00/month per number.",
+    ),
+    (
         "POST /v1/numbers cost",
         "Costs $2.00 per number.",
-        "Costs `$2.00` one-time per number.",
+        "Costs $2.00/month per number.",
     ),
     (
         "POST /v1/numbers capability",
@@ -147,7 +157,7 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "GET /v1/billing/balance",
         "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance, currency, billing rates for calls,\\nphone numbers, and inbound SMS, plus what the balance can cover.\\nUse this to check affordability before paid telephony operations.",
-        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute, billed per second. Phone numbers are 2.00 USD one-time. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute, billed per second. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
     ),
     (
         "security.description",
@@ -162,29 +172,33 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
 ]
 
 
-def replace_once(text: str, old: str, new: str, label: str) -> str:
+def replace_once(text: str, old: str, new: str, label: str, *, required: bool) -> str:
     if old in text:
         count = text.count(old)
         if count != 1:
             raise SystemExit(f"{label}: expected 1 occurrence, found {count}")
         return text.replace(old, new, 1)
-    if new in text:
+    if new in text or not required:
         return text
     raise SystemExit(f"{label}: neither the upstream wording nor the policy text was found")
 
 
 def main() -> None:
     text = SPEC.read_text()
+    optional = {
+        "GET /v1/billing/balance (previous policy)",
+        "POST /v1/numbers cost (previous policy)",
+    }
     for label, old, new in REPLACEMENTS:
-        text = replace_once(text, old, new, label)
+        text = replace_once(text, old, new, label, required=label not in optional)
 
     forbidden = [
         "Send an outbound SMS",
         "calls and SMS autonomously",
         "Bearer sk_live_",
         "API key (sk_live_",
-        "$2/month",
-        "$2.00/month",
+        "USD one-time",
+        "one-time per number",
         "$0.08",
         "$0.02",
         "Canada",
