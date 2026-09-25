@@ -30,15 +30,20 @@ one-time read.
 </CodeGroup>
 
 Each event has `{ event_id, agent_id, event_type, payload, created_at }`.
-The backend publishes these `event_type`s:
+The backend emits:
 
-- `call.received` — an inbound call started
-- `call.utterance` — a live caller turn
-- `call.completed` — the call ended with status `completed`
-- `call.failed` — the call ended with status `failed`
-- `call.busy`, `call.no-answer`, `call.canceled` — other terminal provider statuses
-- `call.owner_task` — a completed call with the owner
-- `sms.received` — an inbound SMS
+- `call.received` — inbound answer
+- `call.utterance` — a live caller turn. Its `conversation` field uses `user` and `assistant`.
+- `call.completed`
+- `call.owner_task`
+- `call.failed`
+- `call.busy`
+- `call.no-answer`
+- `call.canceled`
+- `sms.received`
+- `webhook.test`
+
+`GET /v1/calls/{id}/transcript` uses different role names: `human` and `agent`.
 
 ## Peek (non-destructive)
 

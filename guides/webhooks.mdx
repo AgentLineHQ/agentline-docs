@@ -7,8 +7,11 @@ icon: webhook
 # Webhooks
 
 Each agent can have **one webhook URL** that receives all of that agent's
-events as signed JSON POSTs. For local agents without a public URL, prefer the
-[persistent Agent Relay](/guides/relay).
+events as signed JSON POSTs. Delivered types are `call.received` (inbound
+answer), `call.utterance`, `call.completed`, `call.owner_task`, `call.failed`,
+`call.busy`, `call.no-answer`, `call.canceled`, `sms.received`, and
+`webhook.test`. See [Events](/guides/events). For local agents without a public
+URL, prefer the [persistent Agent Relay](/guides/relay).
 
 ## Configure a webhook
 

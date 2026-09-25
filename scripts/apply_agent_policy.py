@@ -140,6 +140,11 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
         "Phone numbers are 2.00 USD per month.",
     ),
     (
+        "GET /v1/billing/balance (billed per second)",
+        "Calls are 0.10 USD per minute, billed per second.",
+        "Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent.",
+    ),
+    (
         "POST /v1/numbers cost (previous policy)",
         "Costs `$2.00` one-time per number.",
         "Costs $2.00/month per number.",
@@ -157,7 +162,7 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "GET /v1/billing/balance",
         "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance, currency, billing rates for calls,\\nphone numbers, and inbound SMS, plus what the balance can cover.\\nUse this to check affordability before paid telephony operations.",
-        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute, billed per second. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
     ),
     (
         "security.description",
@@ -169,7 +174,87 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
         '"bearerFormat": "API key (sk_live_...)"',
         '"bearerFormat": "API key (al_live_...)"',
     ),
+    (
+        "GET /v1/calls/{id}/transcript roles",
+        'with each turn labeled by role (\\"human\\" for the caller, \\"assistant\\"\\nfor the AI agent).',
+        'with each turn labeled by role (\\"human\\" for the caller, \\"agent\\"\\nfor the AI agent). The call.utterance conversation field uses user and assistant instead.',
+    ),
+    (
+        "POST /v1/calls/{id}/context disposition",
+        "Do your work, then\\nPOST facts for the hosted voice to phrase in its own words. Send ``disposition: progress``\\nas the work advances; the turn stays open. ``done``, ``failed``, or\\n``facts`` settles it. The hosted voice keeps the facts for the rest of the call.\\nIt does not read your text aloud. You receive this request only for something\\nthe hosted voice does not know. Poll ``GET /v1/calls/{call_id}`` for updates.",
+        "Do your work, then\\nPOST short facts, not a script. Include ``disposition``.\\n``progress`` adds a note and keeps the caller on hold with canned lines; the text is not spoken, and the turn stays open.\\n``done`` (the default), ``facts``, and ``failed`` close the turn. The hosted voice rephrases the facts in one or two sentences. It does not read your text aloud.\\n``noop`` closes the turn with no facts.\\nYou receive this request only for something\\nthe hosted voice does not know. Poll ``GET /v1/calls/{call_id}`` for updates.",
+    ),
+    (
+        "POST /v1/calls/{id}/context returns",
+        'delivered=true, status=\\"live\\"      — voice agent will speak it now\\n    delivered=true, status=\\"duplicate\\" — identical retry already accepted\\n    HTTP 409                            — turn is stale/cancelled\\n    HTTP 410                            — **call has ended.** STOP working\\n      on this request and abandon any in-flight lookup. No further context\\n      will be spoken.',
+        'delivered=true, status=\\"live\\"      — accepted for this turn\\n    delivered=true, status=\\"duplicate\\" — identical retry already accepted\\n    HTTP 409                            — turn is stale/cancelled\\n    HTTP 410                            — **call has ended.** STOP working\\n      on this request and abandon any in-flight lookup.',
+    ),
+    (
+        "POST /v1/webhooks event types",
+        "The configured URL receives ALL of that agent's event types — call lifecycle\\n(`call.received`, `call.completed`, `call.failed`), SMS (`sms.received`),\\nand future events — as signed JSON POSTs.",
+        "The configured URL receives ALL of that agent's event types — `call.received` (inbound answer), `call.utterance`, `call.completed`, `call.owner_task`, `call.failed`, `call.busy`, `call.no-answer`, `call.canceled`, `sms.received`, and `webhook.test` — as signed JSON POSTs.",
+    ),
 ]
+
+
+def drop_openapi_path(text: str, path: str) -> str:
+    """Remove one path object. No-op when the path is absent."""
+    needle = f'"{path}":'
+    start = 0
+    idx = -1
+    line_start = 0
+    while True:
+        found = text.find(needle, start)
+        if found < 0:
+            return text
+        line_start = text.rfind("\n", 0, found) + 1
+        prefix = text[line_start:found]
+        if prefix.strip() == "" and prefix == "    ":
+            idx = found
+            break
+        start = found + len(needle)
+    if idx < 0:
+        return text
+    brace = text.find("{", idx)
+    if brace < 0:
+        raise SystemExit(f"{path}: missing object")
+    depth = 0
+    in_str = False
+    esc = False
+    end = None
+    for i in range(brace, len(text)):
+        ch = text[i]
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                break
+    if end is None:
+        raise SystemExit(f"{path}: unterminated object")
+    j = end
+    while j < len(text) and text[j] in " \t":
+        j += 1
+    if j < len(text) and text[j] == ",":
+        j += 1
+        if j < len(text) and text[j] == "\n":
+            j += 1
+        return text[:line_start] + text[j:]
+    comma = text.rfind(",", 0, line_start)
+    if comma < 0:
+        raise SystemExit(f"{path}: could not find a comma around the path")
+    return text[:comma] + text[end:]
 
 
 def replace_once(text: str, old: str, new: str, label: str, *, required: bool) -> str:
@@ -184,9 +269,10 @@ def replace_once(text: str, old: str, new: str, label: str, *, required: bool) -
 
 
 def main() -> None:
-    text = SPEC.read_text()
+    text = drop_openapi_path(SPEC.read_text(), "/v1/numbers/attach")
     optional = {
         "GET /v1/billing/balance (previous policy)",
+        "GET /v1/billing/balance (billed per second)",
         "POST /v1/numbers cost (previous policy)",
     }
     for label, old, new in REPLACEMENTS:
@@ -199,6 +285,10 @@ def main() -> None:
         "API key (sk_live_",
         "USD one-time",
         "one-time per number",
+        "billed per second",
+        '"/v1/numbers/attach"',
+        "voice agent will speak it now",
+        '"assistant"\\nfor the AI agent',
         "$0.08",
         "$0.02",
         "Canada",
