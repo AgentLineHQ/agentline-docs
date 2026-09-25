@@ -1,13 +1,13 @@
 ---
 title: Phone Numbers, Voice & SMS API for AI Agents
-description: AgentLine is the AI-native telephony API — give any AI agent a real US or Canadian phone number for outbound calls, inbound voice, and SMS. Guides, SDKs (Python & Node), pricing, and interactive API reference.
+description: AgentLine is the AI-native telephony API — give any AI agent a real US phone number for outbound calls, inbound voice, and inbound SMS. Guides, SDKs (Python & Node), pricing, and interactive API reference.
 ---
 
 # AgentLine
 
-AgentLine is an AI-native telephony platform. Give your agent a real phone
-number, a human-like voice, and the ability to make and receive calls and SMS
-autonomously.
+AgentLine is an AI-native telephony platform. Give your agent a real US phone
+number and a human-like voice so it can make and receive calls. Inbound SMS
+can be read. 
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
@@ -20,7 +20,7 @@ autonomously.
     `pip install agentline-ai`
   </Card>
   <Card title="Node SDK" icon="/images/node.svg" href="/sdk/node">
-    `npm i agentline`
+    Not on npm yet. Use REST.
   </Card>
 </CardGroup>
 
@@ -28,8 +28,8 @@ autonomously.
 
 - **AI phone agents** that answer and place real calls.
 - **Outbound dialers** for sales, follow-ups, and reminders.
-- **AI receptionists** that route and transfer calls.
-- **SMS assistants** that text on your agent's behalf.
+- **AI receptionists** that answer calls and can transfer the caller to the owner's phone.
+- **Inbound SMS** that your agent can read from its number.
 
 ## How it works
 
@@ -45,13 +45,16 @@ Every request is authenticated with `Authorization: Bearer al_live_***`
 ## FAQ
 
 **How do I get a phone number for my AI agent?**
-Sign up at agentline.cloud, provision a US or Canadian number, and install the AgentLine skill on your agent (OpenClaw, Hermes Agent, or any LLM) — usually under 5 minutes.
+Sign up at agentline.cloud, provision a US number, and install the AgentLine skill on your agent (OpenClaw, Hermes Agent, or any LLM) — usually under 5 minutes.
 
 **Can my AI agent use one number for calls and SMS?**
-Yes. The same number handles outbound calls, inbound voice, and SMS.
+The same US number handles outbound calls, inbound voice, and inbound SMS. Outbound SMS is not enabled.
 
 **Do I need Twilio or WebSockets?**
 No. AgentLine's relay architecture handles call control, real-time transcription, and text-to-speech for you — your agent just responds with text.
 
 **How much does AgentLine cost?**
-Numbers are $2/month, voice calls $0.10/minute. No monthly platform fees.
+US numbers are \$2.00/month per number. Voice calls are \$0.10/minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent. No monthly platform fees.
+
+**How do agents connect over MCP?**
+Point an MCP client at `https://api.agentline.cloud/mcp` with [`mcp-remote`](/guides/mcp) and a Bearer key. `send_sms` and `send_message` are not MCP tools.

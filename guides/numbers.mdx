@@ -5,8 +5,11 @@ description: Provision and manage US phone numbers for your agents.
 
 # Phone Numbers
 
-Each agent can have **one active phone number**. Numbers cost a flat
-provisioning fee, deducted from your balance.
+Each agent can have **one active phone number**. Numbers are **US only** and
+cost **\$2.00/month** per number, deducted from your balance.
+
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
 
 ## Buy a number
 
@@ -20,19 +23,26 @@ provisioning fee, deducted from your balance.
   )
   ```
   ```javascript
-  const number = await client.numbers.buy({
-      agentId: agent.id,
+  const number = await fetch("https://api.agentline.cloud/v1/numbers", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
       country: "US",
-      numberType: "local",
-      areaCode: "415",
-  });
+      number_type: "local",
+      area_code: "415",
+    }),
+  }).then((res) => res.json());
   ```
 </CodeGroup>
 
 | Field | Notes |
 |-------|-------|
 | `agent_id` | Agent to assign the number to (required) |
-| `country` | Currently `US` |
+| `country` | `US` only |
 | `number_type` | `local` or `tollfree` |
 | `area_code` | Preferred 3-digit US area code (e.g. `212`, `415`, `310`) |
 
@@ -45,9 +55,14 @@ provisioning fee, deducted from your balance.
   client.numbers.reassign(number.id, agent_id=other_agent.id)
   ```
   ```javascript
-  await client.numbers.list();
-  await client.numbers.get(number.id);
-  await client.numbers.reassign(number.id, { agentId: otherAgent.id });
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/numbers", { headers });
+  await fetch(`https://api.agentline.cloud/v1/numbers/${number.id}`, { headers });
+  await fetch(
+    `https://api.agentline.cloud/v1/numbers/${number.id}/reassign?agent_id=${otherAgent.id}`,
+    { method: "PATCH", headers },
+  );
   ```
 </CodeGroup>
 

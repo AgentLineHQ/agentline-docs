@@ -39,7 +39,7 @@ AgentLine sends events as durable frames. They remain available until ACKed.
 For a live caller turn:
 
 ```json
-{"type":"context","event_id":"evt_xxx","call_id":"call_xxx","turn_id":"turn_xxx","push_token":"...","context":"Your inbox has no new emails."}
+{"type":"context","event_id":"evt_xxx","call_id":"call_xxx","turn_id":"turn_xxx","push_token":"...","context":"No new emails.","disposition":"done"}
 {"type":"ack","event_id":"evt_xxx"}
 ```
 
@@ -47,10 +47,16 @@ Always echo the exact `turn_id`. A late or cancelled result returns `409` and
 must not be applied to another caller question. Reconnects replay unacknowledged
 events, and the connector deduplicates completed work by `event_id`.
 
-The `context` value is direct speech: return one or two concise caller-ready
-sentences. AgentLine speaks it verbatim and then stores it as the assistant turn
-for later conversation context. The hosted voice LLM only rephrases it if direct
-speech synthesis fails.
+`context` is short facts, not a script. The hosted voice does not speak that
+text aloud.
+
+| `disposition` | What happens |
+| --- | --- |
+| `progress` | Adds a note and keeps the caller on hold. They hear canned lines. The text is not spoken. The turn stays open. |
+| `done` | Default. Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `facts` | Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `failed` | Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `noop` | Closes the turn with no facts. |
 
 ## Runtime behavior
 
@@ -76,7 +82,7 @@ For a live event, the HTTP equivalent is:
 curl -X POST "https://api.agentline.cloud/v1/calls/call_xxx/context?turn_id=turn_xxx" \
   -H "X-Push-Token: PUSH_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"turn_id":"turn_xxx","context":"Your inbox has no new emails."}'
+  -d '{"turn_id":"turn_xxx","context":"No new emails.","disposition":"done"}'
 ```
 
 Use a public [webhook](/guides/webhooks) only when a persistent outbound

@@ -1,0 +1,35 @@
+---
+title: MCP
+description: Connect an MCP client to AgentLine with mcp-remote and a Bearer API key.
+---
+
+# MCP
+
+The MCP server is `https://api.agentline.cloud/mcp`. Connect with `mcp-remote`
+and a Bearer API key (`al_live_...`; legacy `sk_live_...` still works).
+
+```json
+{
+  "mcpServers": {
+    "agentline": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "https://api.agentline.cloud/mcp",
+        "--header",
+        "Authorization: Bearer $AGENTLINE_API_KEY"
+      ]
+    }
+  }
+}
+```
+
+The server mounts the agent-facing REST operations as tools (21+), including
+`create_agent`, `make_outbound_call`, `push_call_context`, and `list_messages`.
+
+<Warning>
+  Outbound SMS is not enabled. `send_sms` and `send_message` are not MCP tools.
+  Inbound SMS is listed with `list_messages` (`GET /v1/messages`) and delivered
+  as `sms.received` events.
+</Warning>

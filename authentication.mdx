@@ -11,6 +11,8 @@ AgentLine uses **Bearer API keys**. Every authenticated request needs:
 Authorization: Bearer al_live_xxxxxxxxxxxx
 ```
 
+Keys use the `al_live_...` prefix. Legacy keys prefixed `sk_live_...` still work.
+
 ## Getting a key
 
 Sign-up and sign-in use the same email one-time-code flow:
@@ -60,11 +62,17 @@ and a human who later signs in land on the identical account.
   client = AgentLine(api_key="al_live_...")
   ```
   ```javascript
-  import { AgentLineClient } from "agentline";
-  const client = new AgentLineClient({ apiKey: "al_live_..." });
+  const res = await fetch("https://api.agentline.cloud/v1/agents", {
+    headers: { Authorization: "Bearer al_live_..." },
+  });
   ```
   ```bash
   curl https://api.agentline.cloud/v1/agents \
     -H "Authorization: Bearer al_live_..."
   ```
 </CodeGroup>
+
+## MCP
+
+MCP clients use the same Bearer key against
+`https://api.agentline.cloud/mcp` via `mcp-remote`. See [MCP](/guides/mcp).

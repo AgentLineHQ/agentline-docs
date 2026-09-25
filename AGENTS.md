@@ -15,10 +15,18 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Every page starts with frontmatter `title` and `description`.
 - Use H1 (`#`) once per page for the title; H2 (`##`) for sections.
 - Phone numbers are always E.164, e.g. `+12125557890`.
-- API keys are always `al_live_...`. Never put a real key in examples.
-- Prefer the SDK in examples (Python + Node via `<CodeGroup>`), then a `curl`
-  tab when helpful. Mirror the resource/method names from the API Reference
-  (e.g. `client.calls.hangup(...)`, `client.calls.hangup(...)` in Node).
+- API keys are always `al_live_...` (legacy `sk_live_...` still works). Never put a real key in examples.
+- Phone numbers are **US only** and cost **$2.00/month per number**. Calls are **$0.10/min** in both directions: 0-second calls are free, connected calls have a one-minute minimum, then the actual duration rounded up to the cent. Do not document Canada, a one-time number fee, `$0.08/min`, or `$0.02/msg`.
+- Push context (`POST /v1/calls/{id}/context`) sends short facts plus `disposition` (`progress`, `done`, `facts`, `failed`, `noop`). It is not spoken verbatim.
+- Transcript roles are `human` and `agent`. A `call.utterance` `conversation` uses `user` and `assistant`.
+- Do not document `POST /v1/numbers/attach`. It is operator-only.
+- **Outbound SMS is not enabled for agents.** Document inbound SMS and message listing only. `POST /v1/messages` may remain in the generated API reference; say it is not enabled and is not an MCP tool. Do not list `send_sms` or `send_message` as MCP tools.
+- MCP is `https://api.agentline.cloud/mcp` via `mcp-remote` and a Bearer key.
+- Voice presets are `female-1`, `female-2`, `female-3`, `male-1`, `male-2`, and `male-3`.
+- Prefer the Python SDK in examples (`from agentline_ai import AgentLine`), then a
+  `curl` or `fetch` tab. The Node package is not on npm. Do not document
+  `npm i agentline` as an install that works. Live transfers dial only
+  `owner_phone`; a different `transfer_number` is rejected.
 - Use Mintlify components for emphasis: `<Note>`, `<Warning>`, `<Tip>`,
   `<Steps>`, `<Accordion>`. Don't overuse them.
 
@@ -36,6 +44,8 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Run `mint dev` locally and confirm the page renders and links work.
 - Ensure every new page is referenced in `docs.json`, or it won't be reachable
   in the sidebar.
-- Keep code examples runnable and consistent with the SDKs
-  (Python: `from agentline_ai import AgentLine`; Node:
-  `import { AgentLineClient } from "agentline"`).
+- Keep Python examples runnable: `from agentline_ai import AgentLine`.
+  Node examples use `fetch` against `https://api.agentline.cloud` with
+  `Authorization: Bearer al_live_...` until the package is published.
+  `scripts/apply_agent_policy.py` restores those `fetch` tabs if a sync puts
+  the unpublished `client.*` SDK back.

@@ -8,6 +8,10 @@ description: Make outbound calls, hang up, and read transcripts.
 Calls use a hybrid relay pipeline: the provider answers, plays the greeting,
 records caller speech, transcribes it (Deepgram), and your agent replies with
 text that is spoken back (TTS). The full transcript is saved automatically.
+Voice calls cost **\$0.10 per minute** in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent.
+
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
 
 ## Make an outbound call
 
@@ -22,12 +26,19 @@ text that is spoken back (TTS). The full transcript is saved automatically.
   )
   ```
   ```javascript
-  const call = await client.calls.create({
-      agentId: agent.id,
-      toNumber: "+12125557890",
-      systemPrompt: "You are confirming an appointment.",
-      initialGreeting: "Hi, calling about your appointment tomorrow.",
-  });
+  const call = await fetch("https://api.agentline.cloud/v1/calls", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
+      to_number: "+12125557890",
+      system_prompt: "You are confirming an appointment.",
+      initial_greeting: "Hi, calling about your appointment tomorrow.",
+    }),
+  }).then((res) => res.json());
   ```
 </CodeGroup>
 
@@ -60,10 +71,18 @@ Outbound calls **listen first**. The pipeline classifies what picked up:
   client.calls.list(status="completed")
   ```
   ```javascript
-  await client.calls.hangup(call.id);
-  await client.calls.get(call.id);
-  const transcript = await client.calls.getTranscript(call.id);
-  await client.calls.list({ status: "completed" });
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/hangup`, {
+    method: "POST",
+    headers,
+  });
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}`, { headers });
+  const transcript = await fetch(
+    `https://api.agentline.cloud/v1/calls/${call.id}/transcript`,
+    { headers },
+  ).then((res) => res.json());
+  await fetch("https://api.agentline.cloud/v1/calls?status=completed", { headers });
   ```
 </CodeGroup>
 
@@ -74,24 +93,51 @@ to answer a live caller after a `call.utterance` event, use the persistent
 [Agent Relay](/guides/relay) or push context over HTTP. Every response is bound
 to the exact `turn_id` from that event.
 
+Send short facts, not a script. Include `disposition`:
+
+| `disposition` | What happens |
+| --- | --- |
+| `progress` | Adds a note and keeps the caller on hold. They hear canned lines. The text is not spoken. The turn stays open. |
+| `done` | Default. Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `facts` | Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `failed` | Closes the turn. The hosted voice rephrases the facts in one or two sentences. |
+| `noop` | Closes the turn with no facts. |
+
 <CodeGroup>
   ```python
-  client.calls.push_context(call.id, turn_id="turn_xxx", context="Your order ships Tuesday.")
+  client.calls.push_context(
+      call.id,
+      turn_id="turn_xxx",
+      context="Order ships Tuesday.",
+      disposition="done",
+  )
   ```
   ```javascript
-  await client.calls.pushContext(call.id, { turnId: "turn_xxx", context: "Your order ships Tuesday." });
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/context?turn_id=turn_xxx`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      turn_id: "turn_xxx",
+      context: "Order ships Tuesday.",
+      disposition: "done",
+    }),
+  });
   ```
 </CodeGroup>
+
+The hosted voice does not read `context` aloud. `done`, `facts`, and `failed`
+close the turn and the voice rephrases those facts. `progress` only holds the
+caller.
 
 Returns `delivered=true` with `status: "live"` or `"duplicate"`. A **409** means
 the turn is stale or cancelled; a **410** means the call has ended. Never reuse
 context from one turn for another.
 
-The response is spoken verbatim and then retained as the assistant turn in the
-call conversation. Keep it caller-ready and concise. The hosted LLM is only a
-fallback if direct TTS fails.
-
 <Note>
-  Transcripts are a list of `{role, text, timestamp}` turns where
-  `role` is `human` (caller) or `assistant` (the AI agent).
+  `GET /v1/calls/{id}/transcript` returns `{role, text, timestamp}` turns.
+  `role` is `human` (caller) or `agent` (the AI agent). A `call.utterance`
+  `conversation` field uses `user` and `assistant` instead.
 </Note>

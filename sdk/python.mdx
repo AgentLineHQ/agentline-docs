@@ -18,8 +18,8 @@ client = AgentLine(api_key="al_live_...")
 ```
 
 > PyPI `agentline` is already taken, so the Python distribution is
-> **`agentline-ai`** (import `agentline_ai`). npm `agentline` is used by the
-> [Node SDK](/sdk/node).
+> **`agentline-ai`** (import `agentline_ai`). The Node package is not on npm
+> yet. See [Node](/sdk/node).
 
 ## Resources
 
@@ -29,7 +29,7 @@ The client is grouped by resource, mirroring the [API Reference](/api-reference)
 client.agents     # create, list, get, update, delete
 client.numbers    # buy, list, get, attach, reassign
 client.calls      # create, list, get, get_transcript, hangup, push_context
-client.messages   # send, list, list_conversations
+client.messages   # list, list_conversations
 client.events     # poll, peek
 client.webhooks   # list, set, delete, test
 client.billing    # get_balance, get_expenditure, get_summary, ...

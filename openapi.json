@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AgentLine",
-    "description": "AgentLine gives every AI agent a real phone number, a human-like voice, and the ability to make and receive calls and SMS autonomously. This SDK covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     "version": "0.3.0",
-    "summary": "Phone numbers, voice, and SMS for AI agents.",
+    "summary": "US phone numbers and voice for AI agents. Inbound SMS can be read.",
     "contact": {
       "name": "AgentLine",
       "url": "https://agentline.cloud"
@@ -358,7 +358,7 @@
           "Billing"
         ],
         "summary": "Get Balance",
-        "description": "Get your AI telephony account balance and rate card.\n\nReturns the current balance, currency, billing rates for calls,\nphone numbers, and inbound SMS, plus what the balance can cover.\nUse this to check affordability before paid telephony operations.",
+        "description": "Get your AI telephony account balance and rate card.\n\nReturns the current balance and currency. Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\nUse this to check affordability before paid telephony operations.",
         "operationId": "get_account_balance",
         "responses": {
           "200": {
@@ -832,7 +832,7 @@
           "Calls"
         ],
         "summary": "Push Call Context",
-        "description": "Push context into a LIVE relay-mode call (mid-call context injection).\n\nThis is the required way for backend agents (Hermes, OpenClaw, etc.) to\nanswer a live caller after a ``call.utterance`` event. Do your work, then\nPOST facts for the hosted voice to phrase in its own words. Send ``disposition: progress``\nas the work advances; the turn stays open. ``done``, ``failed``, or\n``facts`` settles it. The hosted voice keeps the facts for the rest of the call.\nIt does not read your text aloud. You receive this request only for something\nthe hosted voice does not know. Poll ``GET /v1/calls/{call_id}`` for updates.\n\nAUTHENTICATION (one of):\n  1. **Push token** (preferred — no API key): the ``push_token`` from the\n     ``call.utterance`` payload, via ``X-Push-Token`` header, ``?token=``\n     query param, or ``push_token`` body field.\n  2. **Bearer API key**: ``Authorization: Bearer al_live_...`` for the\n     account that owns the call.\n\nBody — any of these keys works (``context`` is canonical):\n    {\"context\": \"John emailed yesterday about an invoice.\"}\n\nOther accepted keys: ``summary``, ``answer``, ``response``, ``reply``,\n``text``, ``result``.\n\nEvery response must include the exact ``turn_id`` from ``call.utterance``.\nLate context is rejected instead of being applied to another question.\n\nReturns:\n    delivered=true, status=\"live\"      — voice agent will speak it now\n    delivered=true, status=\"duplicate\" — identical retry already accepted\n    HTTP 409                            — turn is stale/cancelled\n    HTTP 410                            — **call has ended.** STOP working\n      on this request and abandon any in-flight lookup. No further context\n      will be spoken.",
+        "description": "Push context into a LIVE relay-mode call (mid-call context injection).\n\nThis is the required way for backend agents (Hermes, OpenClaw, etc.) to\nanswer a live caller after a ``call.utterance`` event. Do your work, then\nPOST short facts, not a script. Include ``disposition``.\n``progress`` adds a note and keeps the caller on hold with canned lines; the text is not spoken, and the turn stays open.\n``done`` (the default), ``facts``, and ``failed`` close the turn. The hosted voice rephrases the facts in one or two sentences. It does not read your text aloud.\n``noop`` closes the turn with no facts.\nYou receive this request only for something\nthe hosted voice does not know. Poll ``GET /v1/calls/{call_id}`` for updates.\n\nAUTHENTICATION (one of):\n  1. **Push token** (preferred — no API key): the ``push_token`` from the\n     ``call.utterance`` payload, via ``X-Push-Token`` header, ``?token=``\n     query param, or ``push_token`` body field.\n  2. **Bearer API key**: ``Authorization: Bearer al_live_...`` for the\n     account that owns the call.\n\nBody — any of these keys works (``context`` is canonical):\n    {\"context\": \"John emailed yesterday about an invoice.\"}\n\nOther accepted keys: ``summary``, ``answer``, ``response``, ``reply``,\n``text``, ``result``.\n\nEvery response must include the exact ``turn_id`` from ``call.utterance``.\nLate context is rejected instead of being applied to another question.\n\nReturns:\n    delivered=true, status=\"live\"      — accepted for this turn\n    delivered=true, status=\"duplicate\" — identical retry already accepted\n    HTTP 409                            — turn is stale/cancelled\n    HTTP 410                            — **call has ended.** STOP working\n      on this request and abandon any in-flight lookup.",
         "operationId": "push_call_context",
         "parameters": [
           {
@@ -996,7 +996,7 @@
           "Calls"
         ],
         "summary": "Get Transcript",
-        "description": "Get the full conversation transcript for a call.\n\nReturns the complete speech-to-text transcript of the phone call,\nwith each turn labeled by role (\"human\" for the caller, \"assistant\"\nfor the AI agent). Useful for reviewing what was said on the call,\nextracting information, or auditing AI agent behavior.",
+        "description": "Get the full conversation transcript for a call.\n\nReturns the complete speech-to-text transcript of the phone call,\nwith each turn labeled by role (\"human\" for the caller, \"agent\"\nfor the AI agent). The call.utterance conversation field uses user and assistant instead. Useful for reviewing what was said on the call,\nextracting information, or auditing AI agent behavior.",
         "operationId": "get_call_transcript",
         "security": [
           {
@@ -1209,8 +1209,8 @@
         "tags": [
           "Messages"
         ],
-        "summary": "Send Message",
-        "description": "Send an outbound SMS message from an AI agent's phone number.",
+        "summary": "Outbound SMS is not enabled",
+        "description": "Outbound SMS is not enabled for agents.\n\nThis operation is not exposed on the MCP server. `send_sms` and `send_message` are not MCP tools. Do not send SMS or MMS.\n\nInbound SMS is listed with GET /v1/messages (`list_messages`) and delivered as `sms.received` events.",
         "operationId": "send_sms",
         "security": [
           {
@@ -1257,7 +1257,7 @@
           "Messages"
         ],
         "summary": "List Messages",
-        "description": "List SMS messages sent and received by your AI agents.\n\nReturns message history with optional filters by AI agent or\nconversation. Each entry includes direction (inbound/outbound),\nphone numbers, message body, and delivery status.",
+        "description": "List SMS messages for your AI agents.\n\nReturns inbound texts and stored message history. Outbound SMS is not enabled for agents. Optional filters: AI agent or conversation. Each entry includes direction (inbound/outbound), phone numbers, message body, and delivery status.",
         "operationId": "list_messages",
         "security": [
           {
@@ -1361,7 +1361,7 @@
           "Messages"
         ],
         "summary": "List Conversations",
-        "description": "List all SMS conversations for your AI agents.\n\nReturns conversation threads, optionally filtered by AI agent.\nEach conversation represents an ongoing SMS exchange between\nan AI agent's phone number and an external contact.",
+        "description": "List stored SMS conversation threads for your AI agents.\n\nOutbound SMS is not enabled for agents. Threads can be filtered by AI agent and include inbound messages on the agent's phone number.",
         "operationId": "list_conversations",
         "security": [
           {
@@ -1445,7 +1445,7 @@
           "Numbers"
         ],
         "summary": "Provision",
-        "description": "Buy a US phone number for your AI agent.\n\nSearches for and purchases a real US phone number from the telephony\nprovider, then attaches it to the specified AI agent. Once attached,\nthe agent can make outbound calls and receive inbound calls on this number.\n\nEach AI agent can only have ONE active phone number. Costs $2.00 per number.\n\nRequest body:\n  - agent_id: str (required) — the AI agent to assign this number to\n  - country: str (must be \"US\")\n  - number_type: \"local\" | \"tollfree\"\n  - area_code: preferred 3-digit US area code (e.g. \"212\" for NYC, \"415\" for SF)",
+        "description": "Buy a US phone number for your AI agent.\n\nSearches for and purchases a real US phone number from the telephony\nprovider, then attaches it to the specified AI agent. Once attached,\nthe agent can make outbound calls, receive inbound calls, and receive inbound SMS on this number. Outbound SMS is not enabled.\n\nEach AI agent can only have ONE active phone number. Costs $2.00/month per number.\n\nRequest body:\n  - agent_id: str (required) — the AI agent to assign this number to\n  - country: str (must be \"US\")\n  - number_type: \"local\" | \"tollfree\"\n  - area_code: preferred 3-digit US area code (e.g. \"212\" for NYC, \"415\" for SF)",
         "operationId": "buy_phone_number",
         "requestBody": {
           "content": {
@@ -1689,7 +1689,7 @@
           "Webhooks"
         ],
         "summary": "Set Webhook",
-        "description": "Create or replace an agent's webhook.\n\nThe configured URL receives ALL of that agent's event types — call lifecycle\n(`call.received`, `call.completed`, `call.failed`), SMS (`sms.received`),\nand future events — as signed JSON POSTs. Each agent may have at most one\nwebhook; POSTing again replaces it.\n\n- `agent_id`: the agent whose events this webhook receives (required).\n- `secret`:   HMAC signing secret. Omit to auto-generate.\n\nThe response returns the full `secret` **once** — store it to verify the\nsignature header on deliveries.",
+        "description": "Create or replace an agent's webhook.\n\nThe configured URL receives ALL of that agent's event types — `call.received` (inbound answer), `call.utterance`, `call.completed`, `call.owner_task`, `call.failed`, `call.busy`, `call.no-answer`, `call.canceled`, `sms.received`, and `webhook.test` — as signed JSON POSTs. Each agent may have at most one\nwebhook; POSTing again replaces it.\n\n- `agent_id`: the agent whose events this webhook receives (required).\n- `secret`:   HMAC signing secret. Omit to auto-generate.\n\nThe response returns the full `secret` **once** — store it to verify the\nsignature header on deliveries.",
         "operationId": "set_webhook",
         "security": [
           {
@@ -2795,21 +2795,22 @@
         "title": "KeylessWebhookBody"
       },
       "MessageSend": {
+        "description": "Request body for POST /v1/messages. Outbound SMS is not enabled for agents and is not exposed on MCP.",
         "properties": {
           "agent_id": {
             "type": "string",
             "title": "Agent Id",
-            "description": "ID of the AI agent sending the SMS (e.g. 'agt_abc123')"
+            "description": "Agent id. Outbound SMS is not enabled for agents."
           },
           "to_number": {
             "type": "string",
             "title": "To Number",
-            "description": "Destination phone number in E.164 format (e.g. '+12125551234')"
+            "description": "E.164 destination. Outbound SMS is not enabled for agents."
           },
           "body": {
             "type": "string",
             "title": "Body",
-            "description": "SMS message text content"
+            "description": "Message text. Outbound SMS is not enabled for agents."
           },
           "media_url": {
             "anyOf": [
@@ -2821,7 +2822,7 @@
               }
             ],
             "title": "Media Url",
-            "description": "URL of media to attach (MMS)"
+            "description": "Media URL."
           },
           "from_number_id": {
             "anyOf": [
@@ -2833,7 +2834,7 @@
               }
             ],
             "title": "From Number Id",
-            "description": "Specific phone number ID to send from; defaults to the agent's assigned number"
+            "description": "Phone number id."
           }
         },
         "type": "object",
@@ -3117,9 +3118,9 @@
     "securitySchemes": {
       "API Key or OAuth": {
         "type": "http",
-        "description": "AgentLine API key. Get one via the email OTP flow (POST /v1/auth/otp then POST /v1/auth/verify). Pass as: Authorization: Bearer sk_live_...",
+        "description": "AgentLine API key. Get one via the email OTP flow (POST /v1/auth/otp then POST /v1/auth/verify). Pass as: Authorization: Bearer al_live_... (legacy sk_live_... still works).",
         "scheme": "bearer",
-        "bearerFormat": "API key (sk_live_...)",
+        "bearerFormat": "API key (al_live_...)",
         "x-fern-bearer": {
           "name": "apiKey",
           "env": "AGENTLINE_API_KEY"
