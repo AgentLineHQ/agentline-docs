@@ -2822,7 +2822,7 @@
               }
             ],
             "title": "Media Url",
-            "description": "Media URL. Outbound MMS is not enabled for agents."
+            "description": "Media URL."
           },
           "from_number_id": {
             "anyOf": [
@@ -2834,7 +2834,7 @@
               }
             ],
             "title": "From Number Id",
-            "description": "Phone number id. Outbound SMS is not enabled for agents."
+            "description": "Phone number id."
           }
         },
         "type": "object",
