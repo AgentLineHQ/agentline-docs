@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AgentLine",
-    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. Outbound SMS is not enabled for agents and is not exposed on MCP. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     "version": "0.3.0",
     "summary": "US phone numbers and voice for AI agents. Inbound SMS can be read.",
     "contact": {
