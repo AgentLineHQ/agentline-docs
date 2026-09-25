@@ -8,6 +8,9 @@ description: Create and configure AI voice agents.
 An **agent** bundles a system prompt, greeting, voice, and call-handling
 behavior. Every number and call belongs to an agent.
 
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
+
 ## Create an agent
 
 <CodeGroup>
@@ -21,13 +24,20 @@ behavior. Every number and call belongs to an agent.
   )
   ```
   ```javascript
-  const agent = await client.agents.create({
+  const agent = await fetch("https://api.agentline.cloud/v1/agents", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       name: "Support Bot",
-      systemPrompt: "You are a helpful assistant. Be concise.",
-      initialGreeting: "Hi, this is Support. How can I help?",
-      voiceId: "female-1",
-      voicemailMessage: "Hi, this is Support calling about your request. Please call us back at 555-0100.",
-  });
+      system_prompt: "You are a helpful assistant. Be concise.",
+      initial_greeting: "Hi, this is Support. How can I help?",
+      voice_id: "female-1",
+      voicemail_message: "Hi, this is Support calling about your request. Please call us back at 555-0100.",
+    }),
+  }).then((res) => res.json());
   ```
 </CodeGroup>
 
@@ -58,8 +68,15 @@ Include who you are, why you're calling, and a callback number. Do **not** add "
   )
   ```
   ```javascript
-  await client.agents.update(agent.id, {
-      voicemailMessage: "Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      voicemail_message: "Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+    }),
   });
   ```
 </CodeGroup>
@@ -74,10 +91,19 @@ Include who you are, why you're calling, and a callback number. Do **not** add "
   client.agents.delete(agent.id)
   ```
   ```javascript
-  await client.agents.list();
-  await client.agents.get(agent.id);
-  await client.agents.update(agent.id, { voiceId: "male-1" });
-  await client.agents.delete(agent.id);
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/agents", { headers });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, { headers });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "PATCH",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify({ voice_id: "male-1" }),
+  });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "DELETE",
+    headers,
+  });
   ```
 </CodeGroup>
 

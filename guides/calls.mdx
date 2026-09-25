@@ -10,6 +10,9 @@ records caller speech, transcribes it (Deepgram), and your agent replies with
 text that is spoken back (TTS). The full transcript is saved automatically.
 Voice calls cost **\$0.10 per minute** in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent.
 
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
+
 ## Make an outbound call
 
 <CodeGroup>
@@ -23,12 +26,19 @@ Voice calls cost **\$0.10 per minute** in both directions. A 0-second call is fr
   )
   ```
   ```javascript
-  const call = await client.calls.create({
-      agentId: agent.id,
-      toNumber: "+12125557890",
-      systemPrompt: "You are confirming an appointment.",
-      initialGreeting: "Hi, calling about your appointment tomorrow.",
-  });
+  const call = await fetch("https://api.agentline.cloud/v1/calls", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
+      to_number: "+12125557890",
+      system_prompt: "You are confirming an appointment.",
+      initial_greeting: "Hi, calling about your appointment tomorrow.",
+    }),
+  }).then((res) => res.json());
   ```
 </CodeGroup>
 
@@ -61,10 +71,18 @@ Outbound calls **listen first**. The pipeline classifies what picked up:
   client.calls.list(status="completed")
   ```
   ```javascript
-  await client.calls.hangup(call.id);
-  await client.calls.get(call.id);
-  const transcript = await client.calls.getTranscript(call.id);
-  await client.calls.list({ status: "completed" });
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/hangup`, {
+    method: "POST",
+    headers,
+  });
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}`, { headers });
+  const transcript = await fetch(
+    `https://api.agentline.cloud/v1/calls/${call.id}/transcript`,
+    { headers },
+  ).then((res) => res.json());
+  await fetch("https://api.agentline.cloud/v1/calls?status=completed", { headers });
   ```
 </CodeGroup>
 
@@ -95,10 +113,17 @@ Send short facts, not a script. Include `disposition`:
   )
   ```
   ```javascript
-  await client.calls.pushContext(call.id, {
-      turnId: "turn_xxx",
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/context?turn_id=turn_xxx`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      turn_id: "turn_xxx",
       context: "Order ships Tuesday.",
       disposition: "done",
+    }),
   });
   ```
 </CodeGroup>

@@ -45,5 +45,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Ensure every new page is referenced in `docs.json`, or it won't be reachable
   in the sidebar.
 - Keep Python examples runnable: `from agentline_ai import AgentLine`.
-  Node examples use `fetch` against `https://api.agentline.cloud` until the
-  package is published.
+  Node examples use `fetch` against `https://api.agentline.cloud` with
+  `Authorization: Bearer al_live_...` until the package is published.
+  `scripts/apply_agent_policy.py` restores those `fetch` tabs if a sync puts
+  the unpublished `client.*` SDK back.

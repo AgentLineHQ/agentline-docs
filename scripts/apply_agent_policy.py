@@ -9,10 +9,15 @@ production skill facts onto those fields after each sync.
 The replacements are textual and idempotent: if the upstream wording is
 already the policy text, the file is left unchanged. A missing target fails
 the sync instead of publishing the old send-SMS copy.
+
+Guide JavaScript tabs call the REST API with ``fetch``. The Node package is
+not on npm. If a regenerated page puts the unpublished ``client.*`` SDK back
+into a ``javascript`` fence, this script restores the ``fetch`` example.
 """
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -257,6 +262,280 @@ def drop_openapi_path(text: str, path: str) -> str:
     return text[:comma] + text[end:]
 
 
+# (label, sdk snippet a regenerated guide would show, fetch example).
+# Snippets are matched inside the page, so the CodeGroup indent is omitted.
+GUIDE_JS_REPLACEMENTS: list[tuple[str, str, str]] = [
+    (
+        "guides/agents.mdx create",
+        '''const agent = await client.agents.create({
+      name: "Support Bot",
+      systemPrompt: "You are a helpful assistant. Be concise.",
+      initialGreeting: "Hi, this is Support. How can I help?",
+      voiceId: "female-1",
+      voicemailMessage: "Hi, this is Support calling about your request. Please call us back at 555-0100.",
+  });''',
+        '''const agent = await fetch("https://api.agentline.cloud/v1/agents", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: "Support Bot",
+      system_prompt: "You are a helpful assistant. Be concise.",
+      initial_greeting: "Hi, this is Support. How can I help?",
+      voice_id: "female-1",
+      voicemail_message: "Hi, this is Support calling about your request. Please call us back at 555-0100.",
+    }),
+  }).then((res) => res.json());''',
+    ),
+    (
+        "guides/agents.mdx voicemail",
+        '''await client.agents.update(agent.id, {
+      voicemailMessage: "Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+  });''',
+        '''await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      voicemail_message: "Hi, this is Alex calling about the apartment. Please call me back at 555-0100.",
+    }),
+  });''',
+    ),
+    (
+        "guides/agents.mdx manage",
+        '''await client.agents.list();
+  await client.agents.get(agent.id);
+  await client.agents.update(agent.id, { voiceId: "male-1" });
+  await client.agents.delete(agent.id);''',
+        '''const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/agents", { headers });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, { headers });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "PATCH",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify({ voice_id: "male-1" }),
+  });
+  await fetch(`https://api.agentline.cloud/v1/agents/${agent.id}`, {
+    method: "DELETE",
+    headers,
+  });''',
+    ),
+    (
+        "guides/numbers.mdx buy",
+        '''const number = await client.numbers.buy({
+      agentId: agent.id,
+      country: "US",
+      numberType: "local",
+      areaCode: "415",
+  });''',
+        '''const number = await fetch("https://api.agentline.cloud/v1/numbers", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
+      country: "US",
+      number_type: "local",
+      area_code: "415",
+    }),
+  }).then((res) => res.json());''',
+    ),
+    (
+        "guides/numbers.mdx reassign",
+        '''await client.numbers.list();
+  await client.numbers.get(number.id);
+  await client.numbers.reassign(number.id, { agentId: otherAgent.id });''',
+        '''const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/numbers", { headers });
+  await fetch(`https://api.agentline.cloud/v1/numbers/${number.id}`, { headers });
+  await fetch(
+    `https://api.agentline.cloud/v1/numbers/${number.id}/reassign?agent_id=${otherAgent.id}`,
+    { method: "PATCH", headers },
+  );''',
+    ),
+    (
+        "guides/calls.mdx create",
+        '''const call = await client.calls.create({
+      agentId: agent.id,
+      toNumber: "+12125557890",
+      systemPrompt: "You are confirming an appointment.",
+      initialGreeting: "Hi, calling about your appointment tomorrow.",
+  });''',
+        '''const call = await fetch("https://api.agentline.cloud/v1/calls", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
+      to_number: "+12125557890",
+      system_prompt: "You are confirming an appointment.",
+      initial_greeting: "Hi, calling about your appointment tomorrow.",
+    }),
+  }).then((res) => res.json());''',
+    ),
+    (
+        "guides/calls.mdx control",
+        '''await client.calls.hangup(call.id);
+  await client.calls.get(call.id);
+  const transcript = await client.calls.getTranscript(call.id);
+  await client.calls.list({ status: "completed" });''',
+        '''const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/hangup`, {
+    method: "POST",
+    headers,
+  });
+  await fetch(`https://api.agentline.cloud/v1/calls/${call.id}`, { headers });
+  const transcript = await fetch(
+    `https://api.agentline.cloud/v1/calls/${call.id}/transcript`,
+    { headers },
+  ).then((res) => res.json());
+  await fetch("https://api.agentline.cloud/v1/calls?status=completed", { headers });''',
+    ),
+    (
+        "guides/calls.mdx context",
+        '''await client.calls.pushContext(call.id, {
+      turnId: "turn_xxx",
+      context: "Order ships Tuesday.",
+      disposition: "done",
+  });''',
+        '''await fetch(`https://api.agentline.cloud/v1/calls/${call.id}/context?turn_id=turn_xxx`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      turn_id: "turn_xxx",
+      context: "Order ships Tuesday.",
+      disposition: "done",
+    }),
+  });''',
+    ),
+    (
+        "guides/messages.mdx list",
+        '''await client.messages.list({ agentId: agent.id, limit: 50 });
+  await client.messages.listConversations({ agentId: agent.id });''',
+        '''const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch(
+    `https://api.agentline.cloud/v1/messages?agent_id=${agent.id}&limit=50`,
+    { headers },
+  );
+  await fetch(
+    `https://api.agentline.cloud/v1/messages/conversations?agent_id=${agent.id}`,
+    { headers },
+  );''',
+    ),
+    (
+        "guides/events.mdx poll",
+        '''const result = await client.events.poll({ eventType: "call.completed", limit: 50 });
+  for (const e of result.events) console.log(e.event_type, e.payload);''',
+        '''const result = await fetch(
+    "https://api.agentline.cloud/v1/events?event_type=call.completed&limit=50",
+    { headers: { Authorization: "Bearer al_live_..." } },
+  ).then((res) => res.json());
+  for (const e of result.events) console.log(e.event_type, e.payload);''',
+    ),
+    (
+        "guides/events.mdx peek",
+        "await client.events.peek({ agentId: agent.id });",
+        '''await fetch(`https://api.agentline.cloud/v1/events/peek?agent_id=${agent.id}`, {
+    headers: { Authorization: "Bearer al_live_..." },
+  });''',
+    ),
+    (
+        "guides/webhooks.mdx set",
+        '''const wh = await client.webhooks.set({
+      agentId: agent.id,
+      url: "https://yourapp.com/agentline-webhook",
+  });
+  console.log(wh.secret); // full secret shown ONCE — save it''',
+        '''const wh = await fetch("https://api.agentline.cloud/v1/webhooks", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
+      url: "https://yourapp.com/agentline-webhook",
+    }),
+  }).then((res) => res.json());
+  console.log(wh.secret); // full secret shown ONCE — save it''',
+    ),
+    (
+        "guides/webhooks.mdx manage",
+        '''await client.webhooks.list();
+  await client.webhooks.delete({ agentId: agent.id });
+  await client.webhooks.test({ agentId: agent.id });''',
+        '''const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/webhooks", { headers });
+  await fetch(`https://api.agentline.cloud/v1/webhooks?agent_id=${agent.id}`, {
+    method: "DELETE",
+    headers,
+  });
+  await fetch(`https://api.agentline.cloud/v1/webhooks/test?agent_id=${agent.id}`, {
+    method: "POST",
+    headers,
+  });''',
+    ),
+]
+
+JS_FENCE = re.compile(r"```javascript\n(.*?)```", re.DOTALL)
+SDK_JS_MARKERS = (
+    "client.",
+    "AgentLineClient",
+    'from "agentline"',
+    "from 'agentline'",
+    'require("agentline")',
+    "require('agentline')",
+)
+
+
+def apply_guide_javascript(text: str) -> str:
+    for label, old, new in GUIDE_JS_REPLACEMENTS:
+        text = replace_once(text, old, new, label, required=False)
+    return text
+
+
+def assert_fetch_javascript(path: Path, text: str) -> None:
+    for body in JS_FENCE.findall(text):
+        for marker in SDK_JS_MARKERS:
+            if marker in body:
+                raise SystemExit(f"{path.relative_to(ROOT)}: javascript example still uses {marker!r}")
+        if "fetch(" in body and (
+            "https://api.agentline.cloud" not in body or "al_live_" not in body
+        ):
+            raise SystemExit(
+                f"{path.relative_to(ROOT)}: javascript fetch example must call "
+                "https://api.agentline.cloud with a Bearer al_live_ key"
+            )
+
+
+def rewrite_guide_javascript() -> list[Path]:
+    changed: list[Path] = []
+    for path in sorted(ROOT.glob("**/*.mdx")):
+        original = path.read_text()
+        updated = apply_guide_javascript(original)
+        assert_fetch_javascript(path, updated)
+        if updated != original:
+            path.write_text(updated)
+            changed.append(path)
+    return changed
+
+
 def replace_once(text: str, old: str, new: str, label: str, *, required: bool) -> str:
     if old in text:
         count = text.count(old)
@@ -293,6 +572,7 @@ def main() -> None:
         "$0.02",
         "Canada",
         "Canadian",
+        "AgentLineClient",
     ]
     for phrase in forbidden:
         if phrase in text:
@@ -303,6 +583,12 @@ def main() -> None:
         print("Applied agent skill policy to openapi.json")
     else:
         print("openapi.json already matches the agent skill policy")
+
+    changed = rewrite_guide_javascript()
+    if changed:
+        print("Restored fetch examples in " + ", ".join(path.relative_to(ROOT).as_posix() for path in changed))
+    else:
+        print("Guide JavaScript examples already use fetch")
 
 
 if __name__ == "__main__":

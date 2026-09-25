@@ -13,6 +13,10 @@ answer), `call.utterance`, `call.completed`, `call.owner_task`, `call.failed`,
 `webhook.test`. See [Events](/guides/events). For local agents without a public
 URL, prefer the [persistent Agent Relay](/guides/relay).
 
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm. The signature check
+below is local and does not call the API.
+
 ## Configure a webhook
 
 <CodeGroup>
@@ -24,10 +28,17 @@ URL, prefer the [persistent Agent Relay](/guides/relay).
   print(wh.secret)  # full secret shown ONCE — save it
   ```
   ```javascript
-  const wh = await client.webhooks.set({
-      agentId: agent.id,
+  const wh = await fetch("https://api.agentline.cloud/v1/webhooks", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer al_live_...",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      agent_id: agent.id,
       url: "https://yourapp.com/agentline-webhook",
-  });
+    }),
+  }).then((res) => res.json());
   console.log(wh.secret); // full secret shown ONCE — save it
   ```
 </CodeGroup>
@@ -80,9 +91,17 @@ payload:
   client.webhooks.test(agent_id=agent.id)   # sends a signed webhook.test event
   ```
   ```javascript
-  await client.webhooks.list();
-  await client.webhooks.delete({ agentId: agent.id });
-  await client.webhooks.test({ agentId: agent.id });
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch("https://api.agentline.cloud/v1/webhooks", { headers });
+  await fetch(`https://api.agentline.cloud/v1/webhooks?agent_id=${agent.id}`, {
+    method: "DELETE",
+    headers,
+  });
+  await fetch(`https://api.agentline.cloud/v1/webhooks/test?agent_id=${agent.id}`, {
+    method: "POST",
+    headers,
+  });
   ```
 </CodeGroup>
 

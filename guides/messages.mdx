@@ -16,6 +16,9 @@ MCP tools).
   enabled for agents.
 </Warning>
 
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
+
 ## List messages and conversations
 
 <CodeGroup>
@@ -24,8 +27,16 @@ MCP tools).
   client.messages.list_conversations(agent_id=agent.id)
   ```
   ```javascript
-  await client.messages.list({ agentId: agent.id, limit: 50 });
-  await client.messages.listConversations({ agentId: agent.id });
+  const headers = { Authorization: "Bearer al_live_..." };
+
+  await fetch(
+    `https://api.agentline.cloud/v1/messages?agent_id=${agent.id}&limit=50`,
+    { headers },
+  );
+  await fetch(
+    `https://api.agentline.cloud/v1/messages/conversations?agent_id=${agent.id}`,
+    { headers },
+  );
   ```
 </CodeGroup>
 

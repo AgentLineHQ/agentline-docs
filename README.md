@@ -119,8 +119,11 @@ and a US number is $2.00/month. It also states call billing ($0.10/min both
 directions, 0-second calls free, one-minute minimum, then rounded up to the
 cent), transcript roles `human`/`agent`, and push-context dispositions. If
 `POST /v1/numbers/attach` appears in a synced spec, the script removes it.
-Do not remove that step; without it the generated reference tells agents to
-send SMS.
+Guide JavaScript tabs call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key, because the Node package is not on npm. If a
+regenerated page puts `client.*` back in a JavaScript tab, the script restores
+the `fetch` example. Do not remove that step; without it the generated
+reference tells agents to send SMS.
 
 ### Use the AI agent
 

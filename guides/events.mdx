@@ -12,6 +12,9 @@ non-live fallback awareness when neither relay nor webhook is available.
 
 See [Agent Relay](/guides/relay) for the two-command runtime setup.
 
+JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
+Bearer `al_live_...` key. The Node package is not on npm.
+
 ## Poll (fallback, consume once)
 
 `poll` returns pending events **and deletes them** — treat it as a
@@ -24,7 +27,10 @@ one-time read.
       print(e["event_type"], e["payload"])
   ```
   ```javascript
-  const result = await client.events.poll({ eventType: "call.completed", limit: 50 });
+  const result = await fetch(
+    "https://api.agentline.cloud/v1/events?event_type=call.completed&limit=50",
+    { headers: { Authorization: "Bearer al_live_..." } },
+  ).then((res) => res.json());
   for (const e of result.events) console.log(e.event_type, e.payload);
   ```
 </CodeGroup>
@@ -55,7 +61,9 @@ committing to retrieve.
   client.events.peek(agent_id=agent.id)
   ```
   ```javascript
-  await client.events.peek({ agentId: agent.id });
+  await fetch(`https://api.agentline.cloud/v1/events/peek?agent_id=${agent.id}`, {
+    headers: { Authorization: "Bearer al_live_..." },
+  });
   ```
 </CodeGroup>
 
