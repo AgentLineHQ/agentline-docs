@@ -11,6 +11,19 @@ The Node package is not on npm yet. `npm i agentline` returns 404. Call the
 REST API with `fetch` until a package is published. Python is
 `pip install agentline-ai` (`from agentline_ai import AgentLine`).
 
+## Resources
+
+```typescript
+client.agents     // create, list, get, update, delete
+client.numbers    // buy, list, get, attach, reassign
+client.calls      // create, list, get, getTranscript, hangup, pushContext
+client.messages   // list, listConversations
+client.events     // poll, peek
+client.webhooks   // list, set, delete, test
+client.billing    // getBalance, getExpenditure, getSummary, ...
+client.voice      // list, get, set, reset
+```
+
 ## Create an agent and place a call
 
 ```javascript
@@ -19,20 +32,15 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-The client is grouped by resource, mirroring the [API Reference](/api-reference):
-
-```typescript
-client.agents     // create, list, get, update, delete
-client.numbers    // buy, list, get, attach, reassign
-client.calls      // create, list, get, getTranscript, hangup, pushContext
-client.messages   // send, list, listConversations
-client.events     // poll, peek
-client.webhooks   // list, set, delete, test
-client.billing    // getBalance, getExpenditure, getSummary, ...
-client.voice      // list, get, set, reset
-```
-
-## End-to-end example
+const agent = await fetch("https://api.agentline.cloud/v1/agents", {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    name: "Support Bot",
+    system_prompt: "You are a helpful assistant.",
+    initial_greeting: "Hello! How can I help you today?",
+  }),
+}).then((res) => res.json());
 
 await fetch("https://api.agentline.cloud/v1/numbers", {
   method: "POST",

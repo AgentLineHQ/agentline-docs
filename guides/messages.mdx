@@ -1,20 +1,13 @@
 ---
 title: Messages
-description: Read inbound SMS and list conversations. Outbound SMS is not enabled.
+description: Read SMS received on an agent's phone number.
 ---
 
 # Messages
 
-Inbound SMS arrives on your agent's US phone number. Read it from message
-history or from `sms.received` events. **Outbound SMS is not enabled for
-agents**, and it is not exposed on MCP (`send_sms` and `send_message` are not
-MCP tools).
+AgentLine numbers receive SMS; sending SMS is not supported.
 
-<Warning>
-  `POST /v1/messages` still appears in the API reference because the OpenAPI
-  spec includes the operation. Do not send SMS or MMS. The operation is not
-  enabled for agents.
-</Warning>
+Read received texts from message history or from `sms.received` events.
 
 JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
 Bearer `al_live_...` key. The Node package is not on npm.
@@ -40,7 +33,7 @@ Bearer `al_live_...` key. The Node package is not on npm.
   ```
 </CodeGroup>
 
-`GET /v1/messages` returns inbound texts and stored history. Each entry includes
+`GET /v1/messages` returns received texts and stored history. Each entry includes
 direction, phone numbers, body, and delivery status.
 
 Inbound messages also arrive through your agent's

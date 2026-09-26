@@ -6,8 +6,7 @@ description: AgentLine is the AI-native telephony API — give any AI agent a re
 # AgentLine
 
 AgentLine is an AI-native telephony platform. Give your agent a real US phone
-number and a human-like voice so it can make and receive calls. Inbound SMS
-can be read. 
+number and a human-like voice so it can make and receive calls and receive SMS.
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
@@ -48,7 +47,7 @@ Every request is authenticated with `Authorization: Bearer al_live_***`
 Sign up at agentline.cloud, provision a US number, and install the AgentLine skill on your agent (OpenClaw, Hermes Agent, or any LLM) — usually under 5 minutes.
 
 **Can my AI agent use one number for calls and SMS?**
-The same US number handles outbound calls, inbound voice, and inbound SMS. Outbound SMS is not enabled.
+The same US number handles outbound calls, inbound voice, and inbound SMS.
 
 **Do I need Twilio or WebSockets?**
 No. AgentLine's relay architecture handles call control, real-time transcription, and text-to-speech for you — your agent just responds with text.
@@ -57,4 +56,4 @@ No. AgentLine's relay architecture handles call control, real-time transcription
 US numbers are \$2.00/month per number. Voice calls are \$0.10/minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent. No monthly platform fees.
 
 **How do agents connect over MCP?**
-Point an MCP client at `https://api.agentline.cloud/mcp` with [`mcp-remote`](/guides/mcp) and a Bearer key. `send_sms` and `send_message` are not MCP tools.
+Point an MCP client at `https://api.agentline.cloud/mcp` with [`mcp-remote`](/guides/mcp) and a Bearer key.

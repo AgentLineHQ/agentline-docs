@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AgentLine",
-    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. Outbound SMS is not enabled for agents and is not exposed on MCP. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     "version": "0.3.0",
     "summary": "US phone numbers and voice for AI agents. Inbound SMS can be read.",
     "contact": {
@@ -1205,59 +1205,12 @@
       }
     },
     "/v1/messages": {
-      "post": {
-        "tags": [
-          "Messages"
-        ],
-        "summary": "Outbound SMS is not enabled",
-        "description": "Outbound SMS is not enabled for agents.\n\nThis operation is not exposed on the MCP server. `send_sms` and `send_message` are not MCP tools. Do not send SMS or MMS.\n\nInbound SMS is listed with GET /v1/messages (`list_messages`) and delivered as `sms.received` events.",
-        "operationId": "send_sms",
-        "security": [
-          {
-            "API Key or OAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageSend"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "x-fern-sdk-group-name": [
-          "messages"
-        ],
-        "x-fern-sdk-method-name": "send"
-      },
       "get": {
         "tags": [
           "Messages"
         ],
         "summary": "List Messages",
-        "description": "List SMS messages for your AI agents.\n\nReturns inbound texts and stored message history. Outbound SMS is not enabled for agents. Optional filters: AI agent or conversation. Each entry includes direction (inbound/outbound), phone numbers, message body, and delivery status.",
+        "description": "List SMS messages for your AI agents.\n\nReturns texts received on the agent's number and stored message history. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
         "operationId": "list_messages",
         "security": [
           {
@@ -1361,7 +1314,7 @@
           "Messages"
         ],
         "summary": "List Conversations",
-        "description": "List stored SMS conversation threads for your AI agents.\n\nOutbound SMS is not enabled for agents. Threads can be filtered by AI agent and include inbound messages on the agent's phone number.",
+        "description": "List SMS conversation threads for your AI agents.\n\nThreads can be filtered by AI agent and include messages received on the agent's phone number.",
         "operationId": "list_conversations",
         "security": [
           {
@@ -1445,7 +1398,7 @@
           "Numbers"
         ],
         "summary": "Provision",
-        "description": "Buy a US phone number for your AI agent.\n\nSearches for and purchases a real US phone number from the telephony\nprovider, then attaches it to the specified AI agent. Once attached,\nthe agent can make outbound calls, receive inbound calls, and receive inbound SMS on this number. Outbound SMS is not enabled.\n\nEach AI agent can only have ONE active phone number. Costs $2.00/month per number.\n\nRequest body:\n  - agent_id: str (required) — the AI agent to assign this number to\n  - country: str (must be \"US\")\n  - number_type: \"local\" | \"tollfree\"\n  - area_code: preferred 3-digit US area code (e.g. \"212\" for NYC, \"415\" for SF)",
+        "description": "Buy a US phone number for your AI agent.\n\nSearches for and purchases a real US phone number from the telephony\nprovider, then attaches it to the specified AI agent. Once attached,\nthe agent can make outbound calls, receive inbound calls, and receive SMS on this number.\n\nEach AI agent can only have ONE active phone number. Costs $2.00/month per number.\n\nRequest body:\n  - agent_id: str (required) — the AI agent to assign this number to\n  - country: str (must be \"US\")\n  - number_type: \"local\" | \"tollfree\"\n  - area_code: preferred 3-digit US area code (e.g. \"212\" for NYC, \"415\" for SF)",
         "operationId": "buy_phone_number",
         "requestBody": {
           "content": {
@@ -2793,57 +2746,6 @@
           "url"
         ],
         "title": "KeylessWebhookBody"
-      },
-      "MessageSend": {
-        "description": "Request body for POST /v1/messages. Outbound SMS is not enabled for agents and is not exposed on MCP.",
-        "properties": {
-          "agent_id": {
-            "type": "string",
-            "title": "Agent Id",
-            "description": "Agent id. Outbound SMS is not enabled for agents."
-          },
-          "to_number": {
-            "type": "string",
-            "title": "To Number",
-            "description": "E.164 destination. Outbound SMS is not enabled for agents."
-          },
-          "body": {
-            "type": "string",
-            "title": "Body",
-            "description": "Message text. Outbound SMS is not enabled for agents."
-          },
-          "media_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Media Url",
-            "description": "Media URL. Outbound MMS is not enabled for agents."
-          },
-          "from_number_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "From Number Id",
-            "description": "Phone number id. Outbound SMS is not enabled for agents."
-          }
-        },
-        "type": "object",
-        "required": [
-          "agent_id",
-          "to_number",
-          "body"
-        ],
-        "title": "MessageSend"
       },
       "NumberProvision": {
         "properties": {
