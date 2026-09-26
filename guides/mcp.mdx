@@ -27,9 +27,5 @@ and a Bearer API key (`al_live_...`; legacy `sk_live_...` still works).
 
 The server mounts the agent-facing REST operations as tools (21+), including
 `create_agent`, `make_outbound_call`, `push_call_context`, and `list_messages`.
-
-<Warning>
-  Outbound SMS is not enabled. `send_sms` and `send_message` are not MCP tools.
-  Inbound SMS is listed with `list_messages` (`GET /v1/messages`) and delivered
-  as `sms.received` events.
-</Warning>
+Received texts are listed with `list_messages` and delivered as `sms.received`
+events.

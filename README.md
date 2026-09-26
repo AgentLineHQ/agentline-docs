@@ -112,18 +112,16 @@ The daily CI job pulls the refreshed spec into this repo, and Mintlify
 regenerates the pages.
 
 The upstream spec still includes `POST /v1/messages`. After each fetch,
-`scripts/apply_agent_policy.py` stamps the production skill policy onto that
-operation and the auth scheme: outbound SMS is not enabled for agents and is
-not an MCP tool, keys are `al_live_...` (legacy `sk_live_...` still works),
-and a US number is $2.00/month. It also states call billing ($0.10/min both
-directions, 0-second calls free, one-minute minimum, then rounded up to the
-cent), transcript roles `human`/`agent`, and push-context dispositions. If
-`POST /v1/numbers/attach` appears in a synced spec, the script removes it.
-Guide JavaScript tabs call `https://api.agentline.cloud` with `fetch` and a
-Bearer `al_live_...` key, because the Node package is not on npm. If a
-regenerated page puts `client.*` back in a JavaScript tab, the script restores
-the `fetch` example. Do not remove that step; without it the generated
-reference tells agents to send SMS.
+`scripts/apply_agent_policy.py` removes that send operation and the
+`MessageSend` schema, and stamps the remaining policy onto the auth scheme:
+keys are `al_live_...` (legacy `sk_live_...` still works), and a US number is
+$2.00/month. It also states call billing ($0.10/min both directions, 0-second
+calls free, one-minute minimum, then rounded up to the cent), transcript roles
+`human`/`agent`, and push-context dispositions. If `POST /v1/numbers/attach`
+appears in a synced spec, the script removes it. Guide JavaScript tabs call
+`https://api.agentline.cloud` with `fetch` and a Bearer `al_live_...` key,
+because the Node package is not on npm. If a regenerated page puts `client.*`
+back in a JavaScript tab, the script restores the `fetch` example.
 
 ### Use the AI agent
 
