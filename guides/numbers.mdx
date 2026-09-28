@@ -71,3 +71,13 @@ Bearer `al_live_...` key. The Node package is not on npm.
   already have an active number. Deleting an agent detaches (but does not
   release) its number.
 </Note>
+
+## Release a number
+
+`POST /v1/numbers/{number_id}/release`
+
+<Warning>
+  Destructive. This unrents the number from the carrier. It cannot be
+  recovered, and calls and texts to it stop. The request is refused while
+  a call is in progress or a lease is still active.
+</Warning>

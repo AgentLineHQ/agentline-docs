@@ -27,5 +27,7 @@ and a Bearer API key (`al_live_...`; legacy `sk_live_...` still works).
 
 The server mounts the agent-facing REST operations as tools (21+), including
 `create_agent`, `make_outbound_call`, `push_call_context`, and `list_messages`.
+`release_phone_number` is destructive: it unrents the number from the carrier
+and cannot be undone. It is refused while a call or lease is still active.
 Received texts are listed with `list_messages` and delivered as `sms.received`
 events.

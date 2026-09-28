@@ -1550,6 +1550,56 @@
         "x-fern-sdk-method-name": "reassign"
       }
     },
+    "/v1/numbers/{number_id}/release": {
+      "post": {
+        "tags": [
+          "Numbers"
+        ],
+        "summary": "Release Phone Number",
+        "description": "Permanently release a phone number that is not in use.\n\nDestructive: unrents the number from the carrier. The number cannot be recovered, and calls and texts to it will stop. Refused while a call is in progress or a lease is still active.",
+        "operationId": "release_phone_number",
+        "security": [
+          {
+            "API Key or OAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "number_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-fern-sdk-group-name": [
+          "numbers"
+        ],
+        "x-fern-sdk-method-name": "release"
+      }
+    },
     "/v1/voices": {
       "get": {
         "tags": [
