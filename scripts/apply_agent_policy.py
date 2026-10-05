@@ -14,6 +14,10 @@ the sync instead of publishing the old send-SMS copy.
 Guide JavaScript tabs call the REST API with ``fetch``. The Node package is
 not on npm. If a regenerated page puts the unpublished ``client.*`` SDK back
 into a ``javascript`` fence, this script restores the ``fetch`` example.
+
+This script never writes ``llms.txt`` or ``integrations/``. The daily OpenAPI
+sync commits only ``openapi.json`` and the guide, SDK, and getting-started
+pages listed in ``.github/workflows/docs-check.yml``.
 """
 
 from __future__ import annotations
@@ -540,6 +544,9 @@ def assert_fetch_javascript(path: Path, text: str) -> None:
 def rewrite_guide_javascript() -> list[Path]:
     changed: list[Path] = []
     for path in sorted(ROOT.glob("**/*.mdx")):
+        # Hand-written integration pages are outside the OpenAPI sync.
+        if "integrations" in path.relative_to(ROOT).parts:
+            continue
         original = path.read_text()
         updated = apply_guide_javascript(original)
         assert_fetch_javascript(path, updated)
