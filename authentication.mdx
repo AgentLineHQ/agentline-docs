@@ -28,7 +28,9 @@ Sign-up and sign-in use the same email one-time-code flow:
     POST /v1/auth/verify { "email": "...", "otp": "123456" }
     ```
     Returns `api_key` (plaintext, **shown once**) plus your `account_id` and
-    balance. New emails auto-create an account with a sign-up credit.
+    balance. New emails auto-create an account with a $0 balance. Add credit
+    before buying a number; a request that needs more balance returns `402`
+    `insufficient_balance` with top-up instructions.
   </Step>
 </Steps>
 
