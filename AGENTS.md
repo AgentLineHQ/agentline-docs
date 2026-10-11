@@ -21,7 +21,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Transcript roles are `human` and `agent`. A `call.utterance` `conversation` uses `user` and `assistant`.
 - Do not document `POST /v1/numbers/attach`. It is operator-only.
 - Numbers receive SMS. State that sending SMS is not supported only on the messages guide. Do not repeat it on other pages, and do not claim agents can send SMS. Do not list `send_sms` or `send_message` as MCP tools.
-- MCP is `https://api.agentline.cloud/mcp` via `mcp-remote` and a Bearer key.
+- MCP is `https://api.agentline.cloud/mcp`. Claude connects with OAuth (sign in on the hosted consent page at agentline.cloud/oauth/consent, press Allow); other clients use `mcp-remote` and a Bearer key. The connector user guide is `claude-connector.mdx`.
 - Voice presets are `female-1`, `female-2`, `female-3`, `male-1`, `male-2`, and `male-3`.
 - Prefer the Python SDK in examples (`from agentline_ai import AgentLine`), then a
   `curl` or `fetch` tab. The Node package is not on npm. Do not document

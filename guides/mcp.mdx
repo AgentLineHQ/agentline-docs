@@ -1,12 +1,22 @@
 ---
 title: MCP
-description: Connect an MCP client to AgentLine with mcp-remote and a Bearer API key.
+description: Connect an MCP client to AgentLine with OAuth (Claude) or mcp-remote and a Bearer API key.
 ---
 
 # MCP
 
-The MCP server is `https://api.agentline.cloud/mcp`. Connect with `mcp-remote`
-and a Bearer API key (`al_live_...`; legacy `sk_live_...` still works).
+The MCP server is `https://api.agentline.cloud/mcp`.
+
+## Claude
+
+Claude (claude.ai, Desktop, Cowork and Claude Code) connects with OAuth: add the
+server as a connector, sign in to AgentLine in the window that opens and press
+**Allow**. No API key is involved. See [AgentLine for Claude](/claude-connector).
+
+## Other clients
+
+Clients without MCP OAuth connect with `mcp-remote` and a Bearer API key
+(`al_live_...`; legacy `sk_live_...` still works).
 
 ```json
 {
