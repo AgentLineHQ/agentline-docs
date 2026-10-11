@@ -1,0 +1,111 @@
+---
+title: AgentLine for Claude
+description: Connect AgentLine to claude.ai, Claude Desktop, Cowork or Claude Code so Claude can rent numbers, place calls and read transcripts and SMS on your account.
+---
+
+# AgentLine for Claude
+
+AgentLine is a remote MCP connector. Once connected, Claude can create voice
+agents, rent phone numbers, place and monitor calls, read transcripts and
+received SMS, and manage event webhooks on your AgentLine account.
+
+Server URL: `https://api.agentline.cloud/mcp`
+
+## Before you connect
+
+- An AgentLine account at [agentline.cloud](https://agentline.cloud). Sign in
+  with email, Google or AgentID.
+- A funded balance for paid actions. Numbers are $2.00/month. Calls are
+  $0.10/min and need at least $0.50 of balance. Reading your data is free.
+- A paid Claude plan to add connectors in claude.ai. Claude Code works on any plan.
+
+## Connect in claude.ai, Claude Desktop or Cowork
+
+<Steps>
+  <Step title="Add the connector">
+    Open **Customize → Connectors**. Press **Connect** on the AgentLine listing,
+    or choose **Add custom connector** and paste
+    `https://api.agentline.cloud/mcp`.
+  </Step>
+  <Step title="Sign in to AgentLine">
+    A window opens at agentline.cloud. Sign in if you are not already.
+  </Step>
+  <Step title="Allow">
+    Choose **Read and write** (default) or **Read only**, keep **Stay connected
+    for 30 days** on, and press **Allow**.
+  </Step>
+  <Step title="Use it in a chat">
+    The connector shows **Connected**. Turn it on in a chat from **+ → Connectors**.
+  </Step>
+</Steps>
+
+<Note>
+AgentLine never receives your Claude credentials, and Claude never receives
+your AgentLine API keys or password. The connection is an OAuth grant you can
+revoke at any time.
+</Note>
+
+## Connect in Claude Code
+
+```bash
+claude mcp add --transport http agentline https://api.agentline.cloud/mcp
+```
+
+Run `/mcp` inside Claude Code and choose **Authenticate** for AgentLine. The
+same consent page opens in your browser.
+
+## Example prompts
+
+- "Create an AgentLine voice agent called Front Desk that books appointments for a dental clinic, rent a number in the 415 area code and attach it."
+- "Call +14155550100 with my Front Desk agent, ask whether they are open on Saturday, and summarise the transcript when it finishes."
+- "Show my AgentLine calls from this week with their duration and cost."
+- "Set the webhook for my Front Desk agent to https://example.com/hooks/agentline and send a test event."
+- "What is my AgentLine balance and where did I spend it this month?"
+
+## Permissions
+
+| Permission | Tools |
+|---|---|
+| Read only | List and get agents, numbers, calls, transcripts, received messages, balance and spend, voices, webhook configuration and feedback. Peek at pending events. |
+| Read and write | Everything above, plus create, update and delete agents; buy and release numbers; place and hang up calls; push context into a live call; consume events; set, test and delete webhooks; change the account voice; submit feedback. |
+
+Claude asks you before any tool that charges your account, contacts a third
+party or removes something: buying or releasing a number, placing a call,
+pushing context into a live call, consuming events, replacing a webhook and
+deleting an agent.
+
+<Warning>
+You are responsible for having consent to call the people your agent contacts
+and for following the calling rules where they are. AgentLine numbers cannot
+reach emergency services. See the [terms of service](https://agentline.cloud/terms).
+</Warning>
+
+## Revoke the connection
+
+Open [Dashboard → Account data](https://agentline.cloud/dashboard/privacy) and
+press **Revoke** next to the Claude connection. Claude loses access
+immediately. You can also remove the connector from Claude's
+**Customize → Connectors** page.
+
+## Troubleshooting
+
+| What you see | Why | Fix |
+|---|---|---|
+| **Reconnect** after about an hour | The connection was approved without **Stay connected for 30 days** | Reconnect and leave the checkbox on |
+| `Read Only connection cannot modify data` | The connection was approved as **Read only** | Revoke it in the dashboard and reconnect with **Read and write** |
+| `Insufficient balance` | Paid actions need a funded account | Add credit from the dashboard, then ask Claude to retry |
+| `Couldn't reach the MCP server` | Temporary outage or network block | Try again, then [contact support](https://agentline.cloud/contact) |
+| "This sign-in request expired" on the consent page | More than 10 minutes passed since Claude opened it | Start the connection again from Claude |
+
+## Headless agents and other MCP clients
+
+Clients that cannot open a browser use an API key instead of the login. On the
+consent page choose **Use an API key instead**, or connect with `mcp-remote`
+and a Bearer key as described in the [MCP guide](/guides/mcp). Never put a key
+in a URL.
+
+## Support
+
+- Product and setup: [support@agentline.cloud](mailto:support@agentline.cloud)
+- Security reports: [security@agentline.cloud](mailto:security@agentline.cloud)
+- [Privacy policy](https://agentline.cloud/privacy) · [Terms](https://agentline.cloud/terms)

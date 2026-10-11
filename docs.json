@@ -53,6 +53,7 @@
               "guides/numbers",
               "guides/calls",
               "guides/messages",
+              "claude-connector",
               "guides/mcp",
               "guides/events",
               "guides/relay",
