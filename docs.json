@@ -50,6 +50,7 @@
             "group": "Guides",
             "pages": [
               "guides/agents",
+              "guides/contacts",
               "guides/numbers",
               "guides/calls",
               "guides/messages",

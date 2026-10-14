@@ -36,7 +36,9 @@ Clients without MCP OAuth connect with `mcp-remote` and a Bearer API key
 ```
 
 The server mounts the agent-facing REST operations as tools (21+), including
-`create_agent`, `make_outbound_call`, `push_call_context`, and `list_messages`.
+`create_agent`, `make_outbound_call`, `push_call_context`, `list_messages`, and
+the contacts tools (`create_contact`, `list_contacts`, `update_contact`). See
+[Contacts](/guides/contacts).
 `release_phone_number` is destructive: it unrents the number from the carrier
 and cannot be undone. It is refused while a call or lease is still active.
 Received texts are listed with `list_messages` and delivered as `sms.received`
