@@ -15,8 +15,9 @@ Server URL: `https://api.agentline.cloud/mcp`
 
 - An AgentLine account at [agentline.cloud](https://agentline.cloud). Sign in
   with email, Google or AgentID.
-- A funded balance for paid actions. Numbers are $2.00/month. Calls are
-  $0.10/min and need at least $0.50 of balance. Reading your data is free.
+- A matching plan allowance or wallet funds for paid actions. Additional numbers
+  are $2.00/month. Calls beyond included minutes are $0.10/min and need
+  at least $0.50 of wallet balance to start. Reading your data is free.
 - A paid Claude plan to add connectors in claude.ai. Claude Code works on any plan.
 
 ## Connect in claude.ai, Claude Desktop or Cowork
@@ -93,7 +94,7 @@ immediately. You can also remove the connector from Claude's
 |---|---|---|
 | **Reconnect** after about an hour | The connection was approved without **Stay connected for 30 days** | Reconnect and leave the checkbox on |
 | `Read Only connection cannot modify data` | The connection was approved as **Read only** | Revoke it in the dashboard and reconnect with **Read and write** |
-| `Insufficient balance` | Paid actions need a funded account | Add credit from the dashboard, then ask Claude to retry |
+| `Insufficient balance` | The matching plan allowance and wallet funds are exhausted | Add credit from the dashboard, then ask Claude to retry |
 | `Couldn't reach the MCP server` | Temporary outage or network block | Try again, then [contact support](https://agentline.cloud/contact) |
 | "This sign-in request expired" on the consent page | More than 10 minutes passed since Claude opened it | Start the connection again from Claude |
 
