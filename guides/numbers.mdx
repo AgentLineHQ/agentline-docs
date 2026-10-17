@@ -1,11 +1,11 @@
 ---
 title: Phone Numbers
-description: Provision and manage US phone numbers for your agents.
+description: Provision and manage US or Canadian phone numbers for your agents.
 ---
 
 # Phone Numbers
 
-Each agent can have **one active phone number**. Numbers are **US only** and
+Each agent can have **one active phone number**. Numbers are **US or Canada** and
 use your included number allowance first; additional numbers cost
 **\$2.00/month** each, deducted from your wallet.
 
@@ -43,9 +43,9 @@ Bearer `al_live_...` key. The Node package is not on npm.
 | Field | Notes |
 |-------|-------|
 | `agent_id` | Agent to assign the number to (required) |
-| `country` | `US` only |
-| `number_type` | `local` or `tollfree` |
-| `area_code` | Preferred 3-digit US area code (e.g. `212`, `415`, `310`) |
+| `country` | `US` or `CA` |
+| `number_type` | `local`; toll-free availability depends on the number service |
+| `area_code` | Preferred 3-digit US or Canadian area code (e.g. `212`, `415`, `310`) |
 
 ## List and reassign
 

@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AgentLine",
-    "description": "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    "description": "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     "version": "0.3.0",
-    "summary": "US phone numbers and voice for AI agents. Inbound SMS can be read.",
+    "summary": "US and Canadian phone numbers and voice for AI agents. Inbound SMS can be read.",
     "contact": {
       "name": "AgentLine",
       "url": "https://agentline.cloud"
@@ -1398,7 +1398,7 @@
           "Numbers"
         ],
         "summary": "Provision",
-        "description": "Buy a US phone number for your AI agent.\n\nBuys a real +1 number from the carrier, attaches it to the agent and\nuses an included subscription number, or charges $2.00 to the wallet. Once attached, the agent can make\noutbound calls and answers inbound calls on this number. Not idempotent:\nevery successful call buys and charges for another number.\n\nPrerequisites: an agent from create_agent with no active number (each\nagent has at most one; a second purchase returns HTTP 409), plus a remaining\nsubscription number allowance or $2.00 in the wallet\n(HTTP 402 otherwise; see get_account_balance).\n\nReturns the number's id (num_..., used by release_phone_number and as\nfrom_number_id), phone_number, country, number_type, status, cost,\nbalance_remaining and a private number card link (card_url,\ncard_image_url, card_url_expires_at). If the account has an owner email,\nthe card link is also emailed there.",
+        "description": "Buy a US or Canadian phone number for your AI agent.\n\nBuys a real +1 number from the carrier, attaches it to the agent and\nuses an included subscription number, or charges $2.00 to the wallet. Once attached, the agent can make\noutbound calls and answers inbound calls on this number. Not idempotent:\nevery successful call buys and charges for another number.\n\nPrerequisites: an agent from create_agent with no active number (each\nagent has at most one; a second purchase returns HTTP 409), plus a remaining\nsubscription number allowance or $2.00 in the wallet\n(HTTP 402 otherwise; see get_account_balance).\n\nReturns the number's id (num_..., used by release_phone_number and as\nfrom_number_id), phone_number, country, number_type, status, cost,\nbalance_remaining and a private number card link (card_url,\ncard_image_url, card_url_expires_at). If the account has an owner email,\nthe card link is also emailed there.",
         "operationId": "buy_phone_number",
         "requestBody": {
           "content": {
@@ -2807,7 +2807,7 @@
           "country": {
             "type": "string",
             "title": "Country",
-            "description": "Country code for the phone number (currently only 'US' is supported)",
+            "description": "Country code for the phone number ('US' or 'CA')",
             "default": "US"
           },
           "number_type": {

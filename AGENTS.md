@@ -16,11 +16,11 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Use H1 (`#`) once per page for the title; H2 (`##`) for sections.
 - Phone numbers are always E.164, e.g. `+12125557890`.
 - API keys are always `al_live_...` (legacy `sk_live_...` still works). Never put a real key in examples.
-- Phone numbers are **US only** and cost **$2.00/month per number**. Calls are **$0.10/min** in both directions: 0-second calls are free, connected calls have a one-minute minimum, then the actual duration rounded up to the cent. Do not document Canada, a one-time number fee, `$0.08/min`, or `$0.02/msg`.
+- Phone numbers are **US or Canada** and cost **$2.00/month per number**. Calls are **$0.10/min** in both directions: 0-second calls are free, connected calls have a one-minute minimum, then the actual duration rounded up to the cent. Do not document a one-time number fee, `$0.08/min`, or `$0.02/msg`.
 - Push context (`POST /v1/calls/{id}/context`) sends short facts plus `disposition` (`progress`, `done`, `facts`, `failed`, `noop`). It is not spoken verbatim.
 - Transcript roles are `human` and `agent`. A `call.utterance` `conversation` uses `user` and `assistant`.
 - Do not document `POST /v1/numbers/attach`. It is operator-only.
-- Numbers receive SMS. State that sending SMS is not supported only on the messages guide. Do not repeat it on other pages, and do not claim agents can send SMS. Do not list `send_sms` or `send_message` as MCP tools.
+- Numbers receive SMS. The messages guide may document outbound REST messaging for enabled numbers; MCP does not expose sending SMS. Do not list `send_sms` or `send_message` as MCP tools.
 - MCP is `https://api.agentline.cloud/mcp`. Claude connects with OAuth (sign in on the hosted consent page at agentline.cloud/oauth/consent, press Allow); other clients use `mcp-remote` and a Bearer key. The connector user guide is `claude-connector.mdx`.
 - Voice presets are `female-1`, `female-2`, `female-3`, `male-1`, `male-2`, and `male-3`.
 - Prefer the Python SDK in examples (`from agentline_ai import AgentLine`), then a

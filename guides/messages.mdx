@@ -7,7 +7,9 @@ description: Read SMS received on an agent's phone number.
 
 Subscription minutes, inbound SMS and phone numbers use the matching plan allowance first. Only usage beyond that allowance is deducted from the wallet.
 
-AgentLine numbers receive SMS; sending SMS is not supported.
+AgentLine numbers receive SMS. Outbound messages can be sent through
+`POST /v1/messages` when outbound messaging is enabled for the source number.
+MCP does not expose SMS sending. A queued response is not proof of delivery.
 
 Read received texts from message history or from `sms.received` events.
 

@@ -574,8 +574,21 @@ def main() -> None:
         "GET /v1/messages/conversations (previous disclaimer)",
         "POST /v1/numbers capability (previous disclaimer)",
     }
+    # Subscription-aware API descriptions supersede the legacy wallet-only wording.
+    if "uses an included subscription number, or charges $2.00 to the wallet" in text:
+        optional.update({"POST /v1/numbers cost", "POST /v1/numbers capability"})
     for label, old, new in REPLACEMENTS:
+        updated = new.replace("real US phone number", "real US or Canadian phone number").replace("US phone numbers and voice", "US and Canadian phone numbers and voice")
+        text = text.replace(new, updated)
+        new = updated
         text = replace_once(text, old, new, label, required=label not in optional)
+
+    # Country coverage is shared by both supported provisioning backends.
+    text = text.replace("real US phone number", "real US or Canadian phone number")
+    text = text.replace("US phone numbers and voice", "US and Canadian phone numbers and voice")
+    text = text.replace("real US phone numbers", "real US and Canadian phone numbers")
+    text = text.replace("Country code for the phone number (currently only 'US' is supported)", "Country code for the phone number ('US' or 'CA')")
+    text = text.replace("Buy a US phone number", "Buy a US or Canadian phone number")
 
     forbidden = [
         "Send an outbound SMS",
@@ -594,8 +607,6 @@ def main() -> None:
         '"assistant"\\nfor the AI agent',
         "$0.08",
         "$0.02",
-        "Canada",
-        "Canadian",
         "AgentLineClient",
     ]
     for phrase in forbidden:
