@@ -30,12 +30,12 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "info.description (previous policy)",
         "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.summary (previous policy)",
         "US and Canadian phone numbers and voice for AI agents. Inbound SMS can be read.",
-        "US phone numbers and voice for AI agents, with SMS in both directions.",
+        "US and Canadian phone numbers and voice for AI agents, with SMS in both directions.",
     ),
     (
         "GET /v1/billing/balance (previous SMS wording)",
@@ -45,22 +45,22 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "info.description (shorter disclaimer)",
         "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.description (previous disclaimer)",
         "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. Outbound SMS is not enabled for agents and is not exposed on MCP. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.description",
         "AgentLine gives every AI agent a real phone number, a human-like voice, and the ability to make and receive calls and SMS autonomously. This SDK covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.summary",
         "Phone numbers, voice, and SMS for AI agents.",
-        "US phone numbers and voice for AI agents, with SMS in both directions.",
+        "US and Canadian phone numbers and voice for AI agents, with SMS in both directions.",
     ),
     (
         "GET /v1/messages (previous disclaimer)",

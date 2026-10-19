@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AgentLine",
-    "description": "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    "description": "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     "version": "0.3.0",
-    "summary": "US and Canadian phone numbers and voice for AI agents. Inbound SMS can be read.",
+    "summary": "US and Canadian phone numbers and voice for AI agents, with SMS in both directions.",
     "contact": {
       "name": "AgentLine",
       "url": "https://agentline.cloud"
@@ -358,7 +358,7 @@
           "Billing"
         ],
         "summary": "Get Balance",
-        "description": "Get your AI telephony account balance and rate card.\n\nReturns the current balance and currency. Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\nUse this to check affordability before paid telephony operations.",
+        "description": "Get your AI telephony account balance and rate card.\n\nReturns the current balance and currency. Plan allowances are used first. Calls beyond the allowance are 0.12 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Additional phone numbers are 3.00 USD per month. The rate card also includes SMS, sent or received.\nUse this to check affordability before paid telephony operations.",
         "operationId": "get_account_balance",
         "responses": {
           "200": {
@@ -2625,7 +2625,7 @@
           "country": {
             "type": "string",
             "title": "Country",
-            "description": "Country code (only 'US' supported)",
+            "description": "Country code: 'US' or 'CA'",
             "default": "US"
           },
           "number_type": {
