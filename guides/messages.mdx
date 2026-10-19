@@ -9,8 +9,8 @@ AgentLine numbers send and receive SMS. Plan allowances cover sent and received
 texts; beyond the allowance each message is $0.02 in either direction, deducted
 from the wallet.
 
-Send with `POST /v1/messages`. MCP does not expose SMS sending; use REST or the
-Python SDK. Read received texts from message history or from `sms.received`
+Send with `POST /v1/messages`, the Python SDK, or the `send_sms` MCP tool. Read
+received texts from message history or from `sms.received`
 events.
 
 ## Send a message
