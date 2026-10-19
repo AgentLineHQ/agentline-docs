@@ -1205,6 +1205,53 @@
       }
     },
     "/v1/messages": {
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Send Message",
+        "description": "Send an outbound SMS message from an AI agent's phone number.",
+        "operationId": "send_sms",
+        "security": [
+          {
+            "API Key or OAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageSend"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-fern-sdk-group-name": [
+          "messages"
+        ],
+        "x-fern-sdk-method-name": "send"
+      },
       "get": {
         "tags": [
           "Messages"
@@ -2796,6 +2843,56 @@
           "url"
         ],
         "title": "KeylessWebhookBody"
+      },
+      "MessageSend": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id",
+            "description": "ID of the AI agent sending the SMS (e.g. 'agt_abc123')"
+          },
+          "to_number": {
+            "type": "string",
+            "title": "To Number",
+            "description": "Destination phone number in E.164 format (e.g. '+12125551234')"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body",
+            "description": "SMS message text content"
+          },
+          "media_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Url",
+            "description": "URL of media to attach (MMS)"
+          },
+          "from_number_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Number Id",
+            "description": "Specific phone number ID to send from; defaults to the agent's assigned number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "to_number",
+          "body"
+        ],
+        "title": "MessageSend"
       },
       "NumberProvision": {
         "properties": {

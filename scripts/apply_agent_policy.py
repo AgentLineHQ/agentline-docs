@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Reapply production agent-skill policy to the vendored OpenAPI spec.
 
-``openapi.json`` is refreshed from agentline-sdks. That spec still documents
-``POST /v1/messages`` as a send operation and shows ``sk_live_...`` keys.
-The generated API reference is agent-facing, so this script drops the send
-operation and stamps the remaining production facts onto the spec after each
-sync. It does not add an outbound-SMS disclaimer to other operations.
+``openapi.json`` is refreshed from agentline-sdks. That spec shows
+``sk_live_...`` keys and legacy prices. The generated API reference is
+agent-facing, so this script stamps the production facts onto the spec after
+each sync. ``POST /v1/messages`` (send SMS) and the ``MessageSend`` schema are
+published as upstream documents them.
 
 The replacements are textual and idempotent: if the upstream wording is
 already the policy text, the file is left unchanged. A missing target fails
@@ -28,44 +28,69 @@ SPEC = ROOT / "openapi.json"
 # (label, old, new). ``old`` is the upstream wording. ``new`` is the skill policy.
 REPLACEMENTS: list[tuple[str, str, str]] = [
     (
+        "info.description (previous policy)",
+        "AgentLine gives every AI agent a real US or Canadian phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+    ),
+    (
+        "info.summary (previous policy)",
+        "US and Canadian phone numbers and voice for AI agents. Inbound SMS can be read.",
+        "US phone numbers and voice for AI agents, with SMS in both directions.",
+    ),
+    (
+        "GET /v1/billing/balance (previous SMS wording)",
+        "The rate card also includes inbound SMS.",
+        "The rate card also includes SMS in both directions.",
+    ),
+    (
         "info.description (shorter disclaimer)",
         "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.description (previous disclaimer)",
         "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls. Inbound SMS can be read. Outbound SMS is not enabled for agents and is not exposed on MCP. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.description",
         "AgentLine gives every AI agent a real phone number, a human-like voice, and the ability to make and receive calls and SMS autonomously. This SDK covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
-        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
+        "AgentLine gives every AI agent a real US phone number and a human-like voice. Agents can make and receive calls and send and receive SMS. This spec covers the core developer surface: agents, numbers, calls, messages, events, webhooks, billing, and voice.",
     ),
     (
         "info.summary",
         "Phone numbers, voice, and SMS for AI agents.",
-        "US phone numbers and voice for AI agents. Inbound SMS can be read.",
+        "US phone numbers and voice for AI agents, with SMS in both directions.",
     ),
     (
         "GET /v1/messages (previous disclaimer)",
         "List SMS messages for your AI agents.\\n\\nReturns inbound texts and stored message history. Outbound SMS is not enabled for agents. Optional filters: AI agent or conversation. Each entry includes direction (inbound/outbound), phone numbers, message body, and delivery status.",
+        "List SMS messages for your AI agents.\\n\\nReturns texts sent and received on the agent's number. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
+    ),
+    (
+        "GET /v1/messages (previous policy)",
         "List SMS messages for your AI agents.\\n\\nReturns texts received on the agent's number and stored message history. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
+        "List SMS messages for your AI agents.\\n\\nReturns texts sent and received on the agent's number. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
     ),
     (
         "GET /v1/messages",
         "List SMS messages sent and received by your AI agents.\\n\\nReturns message history with optional filters by AI agent or\\nconversation. Each entry includes direction (inbound/outbound),\\nphone numbers, message body, and delivery status.",
-        "List SMS messages for your AI agents.\\n\\nReturns texts received on the agent's number and stored message history. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
+        "List SMS messages for your AI agents.\\n\\nReturns texts sent and received on the agent's number. Optional filters: AI agent or conversation. Each entry includes direction, phone numbers, message body, and delivery status.",
     ),
     (
         "GET /v1/messages/conversations (previous disclaimer)",
         "List stored SMS conversation threads for your AI agents.\\n\\nOutbound SMS is not enabled for agents. Threads can be filtered by AI agent and include inbound messages on the agent's phone number.",
+        "List SMS conversation threads for your AI agents.\\n\\nThreads can be filtered by AI agent and include messages sent and received on the agent's phone number.",
+    ),
+    (
+        "GET /v1/messages/conversations (previous policy)",
         "List SMS conversation threads for your AI agents.\\n\\nThreads can be filtered by AI agent and include messages received on the agent's phone number.",
+        "List SMS conversation threads for your AI agents.\\n\\nThreads can be filtered by AI agent and include messages sent and received on the agent's phone number.",
     ),
     (
         "GET /v1/messages/conversations",
         "List all SMS conversations for your AI agents.\\n\\nReturns conversation threads, optionally filtered by AI agent.\\nEach conversation represents an ongoing SMS exchange between\\nan AI agent's phone number and an external contact.",
-        "List SMS conversation threads for your AI agents.\\n\\nThreads can be filtered by AI agent and include messages received on the agent's phone number.",
+        "List SMS conversation threads for your AI agents.\\n\\nThreads can be filtered by AI agent and include messages sent and received on the agent's phone number.",
     ),
     (
         "GET /v1/billing/balance (previous policy)",
@@ -90,17 +115,22 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "POST /v1/numbers capability (previous disclaimer)",
         "the agent can make outbound calls, receive inbound calls, and receive inbound SMS on this number. Outbound SMS is not enabled.",
+        "the agent can make outbound calls, receive inbound calls, and send and receive SMS on this number.",
+    ),
+    (
+        "POST /v1/numbers capability (previous policy)",
         "the agent can make outbound calls, receive inbound calls, and receive SMS on this number.",
+        "the agent can make outbound calls, receive inbound calls, and send and receive SMS on this number.",
     ),
     (
         "POST /v1/numbers capability",
         "the agent can make outbound calls and receive inbound calls on this number.",
-        "the agent can make outbound calls, receive inbound calls, and receive SMS on this number.",
+        "the agent can make outbound calls, receive inbound calls, and send and receive SMS on this number.",
     ),
     (
         "GET /v1/billing/balance",
         "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance, currency, billing rates for calls,\\nphone numbers, and inbound SMS, plus what the balance can cover.\\nUse this to check affordability before paid telephony operations.",
-        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Plan allowances are used first. Calls beyond the allowance are 0.12 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Additional phone numbers are 3.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Plan allowances are used first. Calls beyond the allowance are 0.12 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Additional phone numbers are 3.00 USD per month. The rate card also includes SMS in both directions.\\nUse this to check affordability before paid telephony operations.",
     ),
     (
         "security.description",
@@ -562,8 +592,6 @@ def replace_once(text: str, old: str, new: str, label: str, *, required: bool) -
 
 def main() -> None:
     text = drop_openapi_path(SPEC.read_text(), "/v1/numbers/attach")
-    text = drop_openapi_method(text, "/v1/messages", "post")
-    text = drop_keyed_object(text, "MessageSend", "      ")
     optional = {
         "GET /v1/billing/balance (previous policy)",
         "GET /v1/billing/balance (billed per second)",
@@ -571,8 +599,14 @@ def main() -> None:
         "info.description (shorter disclaimer)",
         "info.description (previous disclaimer)",
         "GET /v1/messages (previous disclaimer)",
+        "GET /v1/messages (previous policy)",
         "GET /v1/messages/conversations (previous disclaimer)",
+        "GET /v1/messages/conversations (previous policy)",
         "POST /v1/numbers capability (previous disclaimer)",
+        "POST /v1/numbers capability (previous policy)",
+        "info.description (previous policy)",
+        "info.summary (previous policy)",
+        "GET /v1/billing/balance (previous SMS wording)",
     }
     # Subscription-aware API descriptions supersede the legacy wallet-only wording.
     if "uses an included subscription number, or charges $" in text:
@@ -591,12 +625,9 @@ def main() -> None:
     text = text.replace("Buy a US phone number", "Buy a US or Canadian phone number")
 
     forbidden = [
-        "Send an outbound SMS",
         "Outbound SMS is not enabled",
         "Outbound MMS is not enabled",
-        "sending the SMS",
         "calls and SMS autonomously",
-        '"operationId": "send_sms"',
         "Bearer sk_live_",
         "API key (sk_live_",
         "USD one-time",

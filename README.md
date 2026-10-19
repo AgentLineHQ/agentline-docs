@@ -111,9 +111,9 @@ expose, hide, or rename an endpoint, change the **source of truth**: the
 The daily CI job pulls the refreshed spec into this repo, and Mintlify
 regenerates the pages.
 
-The upstream spec still includes `POST /v1/messages`. After each fetch,
-`scripts/apply_agent_policy.py` removes that send operation and the
-`MessageSend` schema, and stamps the remaining policy onto the auth scheme:
+The upstream spec includes `POST /v1/messages` (send SMS) and the
+`MessageSend` schema; both are published. After each fetch,
+`scripts/apply_agent_policy.py` stamps the policy onto the auth scheme:
 keys are `al_live_...` (legacy `sk_live_...` still works), and an additional
 US or Canada number is $3.00/month. It also states call billing ($0.12/min
 beyond the plan allowance, both directions, 0-second calls free, one-minute

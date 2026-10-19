@@ -20,7 +20,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Push context (`POST /v1/calls/{id}/context`) sends short facts plus `disposition` (`progress`, `done`, `facts`, `failed`, `noop`). It is not spoken verbatim.
 - Transcript roles are `human` and `agent`. A `call.utterance` `conversation` uses `user` and `assistant`.
 - Do not document `POST /v1/numbers/attach`. It is operator-only.
-- Numbers receive SMS. The messages guide may document outbound REST messaging for enabled numbers; MCP does not expose sending SMS. Do not list `send_sms` or `send_message` as MCP tools.
+- Numbers send and receive SMS. Document sending as `POST /v1/messages` with `agent_id`, `to_number`, `body` and optional `media_url`, `from_number_id` (Python SDK: `client.messages.send`). MCP does not expose sending SMS; do not list `send_sms` or `send_message` as MCP tools.
 - MCP is `https://api.agentline.cloud/mcp`. Claude connects with OAuth (sign in on the hosted consent page at agentline.cloud/oauth/consent, press Allow); other clients use `mcp-remote` and a Bearer key. The connector user guide is `claude-connector.mdx`.
 - Voice presets are `female-1`, `female-2`, `female-3`, `male-1`, `male-2`, and `male-3`.
 - Prefer the Python SDK in examples (`from agentline_ai import AgentLine`), then a
