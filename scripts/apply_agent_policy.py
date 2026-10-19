@@ -70,22 +70,22 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "GET /v1/billing/balance (previous policy)",
         "Phone numbers are 2.00 USD one-time.",
-        "Phone numbers are 2.00 USD per month.",
+        "Phone numbers are 3.00 USD per month beyond the plan allowance.",
     ),
     (
         "GET /v1/billing/balance (billed per second)",
         "Calls are 0.10 USD per minute, billed per second.",
-        "Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent.",
+        "Calls beyond the plan allowance are 0.12 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent.",
     ),
     (
         "POST /v1/numbers cost (previous policy)",
         "Costs `$2.00` one-time per number.",
-        "Costs $2.00/month per number.",
+        "Costs $3.00/month per number beyond the plan allowance.",
     ),
     (
         "POST /v1/numbers cost",
         "Costs $2.00 per number.",
-        "Costs $2.00/month per number.",
+        "Costs $3.00/month per number beyond the plan allowance.",
     ),
     (
         "POST /v1/numbers capability (previous disclaimer)",
@@ -100,7 +100,7 @@ REPLACEMENTS: list[tuple[str, str, str]] = [
     (
         "GET /v1/billing/balance",
         "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance, currency, billing rates for calls,\\nphone numbers, and inbound SMS, plus what the balance can cover.\\nUse this to check affordability before paid telephony operations.",
-        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Calls are 0.10 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Phone numbers are 2.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
+        "Get your AI telephony account balance and rate card.\\n\\nReturns the current balance and currency. Plan allowances are used first. Calls beyond the allowance are 0.12 USD per minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration rounded up to the cent. Additional phone numbers are 3.00 USD per month. The rate card also includes inbound SMS.\\nUse this to check affordability before paid telephony operations.",
     ),
     (
         "security.description",
@@ -575,7 +575,7 @@ def main() -> None:
         "POST /v1/numbers capability (previous disclaimer)",
     }
     # Subscription-aware API descriptions supersede the legacy wallet-only wording.
-    if "uses an included subscription number, or charges $2.00 to the wallet" in text:
+    if "uses an included subscription number, or charges $" in text:
         optional.update({"POST /v1/numbers cost", "POST /v1/numbers capability"})
     for label, old, new in REPLACEMENTS:
         updated = new.replace("real US phone number", "real US or Canadian phone number").replace("US phone numbers and voice", "US and Canadian phone numbers and voice")

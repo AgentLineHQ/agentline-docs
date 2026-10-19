@@ -114,9 +114,10 @@ regenerates the pages.
 The upstream spec still includes `POST /v1/messages`. After each fetch,
 `scripts/apply_agent_policy.py` removes that send operation and the
 `MessageSend` schema, and stamps the remaining policy onto the auth scheme:
-keys are `al_live_...` (legacy `sk_live_...` still works), and a US number is
-$2.00/month. It also states call billing ($0.10/min both directions, 0-second
-calls free, one-minute minimum, then rounded up to the cent), transcript roles
+keys are `al_live_...` (legacy `sk_live_...` still works), and an additional
+US or Canada number is $3.00/month. It also states call billing ($0.12/min
+beyond the plan allowance, both directions, 0-second calls free, one-minute
+minimum, then rounded up to the cent), transcript roles
 `human`/`agent`, and push-context dispositions. If `POST /v1/numbers/attach`
 appears in a synced spec, the script removes it. Guide JavaScript tabs call
 `https://api.agentline.cloud` with `fetch` and a Bearer `al_live_...` key,

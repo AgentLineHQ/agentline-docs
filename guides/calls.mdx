@@ -10,7 +10,7 @@ Subscription minutes, inbound SMS and phone numbers use the matching plan allowa
 Calls use a hybrid relay pipeline: the provider answers, plays the greeting,
 records caller speech, transcribes it (Deepgram), and your agent replies with
 text that is spoken back (TTS). The full transcript is saved automatically.
-Voice calls cost **\$0.10 per minute** in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent.
+Voice calls beyond the plan allowance cost **\$0.12 per minute** in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent.
 
 JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
 Bearer `al_live_...` key. The Node package is not on npm.

@@ -16,7 +16,7 @@ configured by `docs.json`. The **API Reference** is auto-generated from
 - Use H1 (`#`) once per page for the title; H2 (`##`) for sections.
 - Phone numbers are always E.164, e.g. `+12125557890`.
 - API keys are always `al_live_...` (legacy `sk_live_...` still works). Never put a real key in examples.
-- Phone numbers are **US or Canada** and cost **$2.00/month per number**. Calls are **$0.10/min** in both directions: 0-second calls are free, connected calls have a one-minute minimum, then the actual duration rounded up to the cent. Do not document a one-time number fee, `$0.08/min`, or `$0.02/msg`.
+- Billing is subscription-first: monthly plans Individual **$15** (1 number, 60 minutes, 300 inbound SMS), Scale **$50** (3 numbers, 200 minutes, 1,000 SMS) and Startup **$200** (12 numbers, 1,000 minutes, 3,000 SMS). Plan allowances are used first; only usage beyond them is deducted from the wallet. Phone numbers are **US or Canada**; additional numbers cost **$3.00/month per number**. Calls beyond the allowance are **$0.12/min** in both directions: 0-second calls are free, connected calls have a one-minute minimum, then the actual duration rounded up to the cent. Inbound SMS beyond the allowance is **$0.02/message**. Do not document a one-time number fee, `$2.00/month`, `$0.10/min` or `$0.08/min`.
 - Push context (`POST /v1/calls/{id}/context`) sends short facts plus `disposition` (`progress`, `done`, `facts`, `failed`, `noop`). It is not spoken verbatim.
 - Transcript roles are `human` and `agent`. A `call.utterance` `conversation` uses `user` and `assistant`.
 - Do not document `POST /v1/numbers/attach`. It is operator-only.

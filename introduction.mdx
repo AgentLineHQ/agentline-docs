@@ -47,13 +47,13 @@ Every request is authenticated with `Authorization: Bearer al_live_***`
 Sign up at agentline.cloud, provision a US number, and install the AgentLine skill on your agent (OpenClaw, Hermes Agent, or any LLM) — usually under 5 minutes.
 
 **Can my AI agent use one number for calls and SMS?**
-The same US number handles outbound calls, inbound voice, and inbound SMS.
+The same US or Canada number handles outbound calls, inbound voice, and inbound SMS.
 
 **Do I need Twilio or WebSockets?**
 No. AgentLine's relay architecture handles call control, real-time transcription, and text-to-speech for you — your agent just responds with text.
 
 **How much does AgentLine cost?**
-US numbers are \$2.00/month per number. Voice calls are \$0.10/minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent. Pay as you go is available without a subscription. Subscription minutes, inbound SMS and phone numbers use the matching plan allowance first. Only usage beyond that allowance is deducted from the wallet.
+Monthly plans start at \$15 (Individual: 1 US/CA number, 60 minutes, 300 inbound SMS), with Scale at \$50 (3 numbers, 200 minutes, 1,000 SMS) and Startup at \$200 (12 numbers, 1,000 minutes, 3,000 SMS). Additional US or Canada numbers are \$3.00/month each. Voice calls beyond the allowance are \$0.12/minute in both directions. A 0-second call is free. A connected call has a one-minute minimum, then the actual duration, rounded up to the cent. Inbound SMS beyond the allowance is \$0.02/message. Subscription minutes, inbound SMS and phone numbers use the matching plan allowance first. Only usage beyond that allowance is deducted from the wallet. See [agentline.cloud/pricing](https://agentline.cloud/pricing).
 
 **How do agents connect over MCP?**
 Point an MCP client at `https://api.agentline.cloud/mcp` with [`mcp-remote`](/guides/mcp) and a Bearer key.
