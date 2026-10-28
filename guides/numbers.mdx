@@ -11,9 +11,10 @@ use your included number allowance first; additional numbers cost
 
 ## Free trial
 
-Every new account starts with a 7-day free trial: one local US or Canada
-number, 10 call minutes and 10 SMS. During the trial, the first buy returns
-that number with `cost` `0`, `trial` `true` and `trial_ends_at`. Recharge or
+An account that has never recharged or picked a plan gets its first local US
+or Canada number free. That buy returns the number with `cost` `0`, `trial`
+`true` and `trial_ends_at`, and starts a 7-day trial with 10 call minutes and
+10 SMS. Recharge or
 pick a plan before the trial ends and the number stays on your account.
 Otherwise it is detached from your account when the trial ends, and calls and
 texts on it stop for you. `GET /v1/billing/balance` returns the trial's
