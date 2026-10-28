@@ -9,6 +9,16 @@ Each agent can have **one active phone number**. Numbers are **US or Canada** an
 use your included number allowance first; additional numbers cost
 **\$3.00/month** each, deducted from your wallet.
 
+## Free trial
+
+Every new account starts with a 7-day free trial: one local US or Canada
+number, 10 call minutes and 10 SMS. During the trial, the first buy returns
+that number with `cost` `0`, `trial` `true` and `trial_ends_at`. Recharge or
+pick a plan before the trial ends and the number stays on your account.
+Otherwise it is detached from your account when the trial ends, and calls and
+texts on it stop for you. `GET /v1/billing/balance` returns the trial's
+`status`, `ends_at`, `call_seconds_remaining` and `sms_remaining`.
+
 JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
 Bearer `al_live_...` key. The Node package is not on npm.
 
@@ -80,5 +90,6 @@ Bearer `al_live_...` key. The Node package is not on npm.
 <Warning>
   Destructive. This unrents the number from the carrier. It cannot be
   recovered, and calls and texts to it stop. The request is refused while
-  a call is in progress or a lease is still active.
+  a call is in progress or a lease is still active, and for a free-trial
+  number.
 </Warning>
