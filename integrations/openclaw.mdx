@@ -1,0 +1,106 @@
+---
+title: Give your OpenClaw agent a phone number
+description: Connect AgentLine MCP to OpenClaw so the agent can buy a US phone number, place and answer calls, and receive SMS. Copy-paste config for ~/.openclaw/openclaw.json.
+---
+
+# Give your OpenClaw agent a phone number
+
+Connect AgentLine's MCP server and your OpenClaw agent gets a real US phone
+number it can use to make and answer calls.
+
+## MCP quickstart
+
+<Steps>
+  <Step title="Get an API key">
+    Create a key in the [AgentLine dashboard](https://agentline.cloud). Keys
+    look like `al_live_...`. Export it before you add the server:
+
+    ```bash
+    export AGENTLINE_API_KEY="al_live_..."
+    ```
+  </Step>
+  <Step title="Add the MCP server">
+    OpenClaw stores MCP servers in `~/.openclaw/openclaw.json` under
+    `mcp.servers`. Remote servers use `transport: "streamable-http"` and a
+    `headers` map. Save this with the CLI, or merge the same object into the
+    file:
+
+    ```bash
+    openclaw mcp set agentline '{"url":"https://api.agentline.cloud/mcp","transport":"streamable-http","headers":{"Authorization":"Bearer ${AGENTLINE_API_KEY}"}}'
+    ```
+
+    ```json
+    {
+      "mcp": {
+        "servers": {
+          "agentline": {
+            "url": "https://api.agentline.cloud/mcp",
+            "transport": "streamable-http",
+            "headers": {
+              "Authorization": "Bearer ${AGENTLINE_API_KEY}"
+            }
+          }
+        }
+      }
+    }
+    ```
+
+    `${AGENTLINE_API_KEY}` is expanded from the environment. Leave the
+    transport set. OpenClaw treats a remote URL without `transport` as SSE.
+  </Step>
+  <Step title="Install the AgentLine skill (optional)">
+    The skill teaches the agent the call, number, and webhook rules. Install
+    it from [skills.sh](https://www.skills.sh/agentlinehq/agentline-skill/agentline)
+    or point the agent at [agentline.cloud/skill.md](https://agentline.cloud/skill.md):
+
+    ```bash
+    openclaw skills install skills-sh:AgentLineHQ/agentline-skill/agentline
+    ```
+  </Step>
+  <Step title="Verify it works">
+    Probe the server, then ask OpenClaw to list its AgentLine tools:
+
+    ```bash
+    openclaw mcp doctor agentline --probe
+    ```
+
+    You should see the AgentLine tools, including `create_agent` and
+    `make_outbound_call`. If the probe fails, check that
+    `AGENTLINE_API_KEY` is set to the `al_live_...` key.
+  </Step>
+</Steps>
+
+Stdio-only clients can use the bridge published in the AgentLine skill. See
+the [MCP guide](/guides/mcp).
+
+## First task
+
+Ask the agent:
+
+> Buy a US phone number, then register a webhook so you can take an inbound call.
+
+It should create an agent if you do not already have one, buy a US number
+(area codes such as `212` or `415`), and set a webhook URL. Call that number
+to confirm the agent answers. Inbound texts on the same number show up as
+`sms.received` events. Details are in [Webhooks](/guides/webhooks) and
+[Messages](/guides/messages).
+
+## What the agent can do
+
+- Buy a US phone number for an agent.
+- Place outbound calls and answer inbound calls.
+- Receive SMS on that number and read the text in message history.
+- Take live call and message events through a [webhook](/guides/webhooks) or the [events](/guides/events) mailbox.
+
+## Pricing
+
+US numbers are **\$2.00/month** each. Calls are **\$0.10/min** in both
+directions. A 0-second call is free. A connected call has a one-minute
+minimum, then the actual duration, rounded up to the cent. Inbound SMS is
+**\$0.02** per message.
+
+## Next
+
+- [MCP](/guides/mcp) for the shared server URL and the `mcp-remote` bridge
+- [Webhooks](/guides/webhooks) for signed event delivery
+- [Messages](/guides/messages) for texts the number receives
