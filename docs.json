@@ -58,6 +58,7 @@
               "guides/mcp",
               "guides/events",
               "guides/relay",
+              "guides/knowledge",
               "guides/webhooks"
             ]
           },

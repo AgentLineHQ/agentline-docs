@@ -74,6 +74,20 @@ python ~/.agentline/agentline_relay.py inbox list --agent-id agt_xxx
 python ~/.agentline/agentline_relay.py inbox ack --agent-id agt_xxx --event-id evt_xxx
 ```
 
+## Remember an answer
+
+Where the [knowledge store](/guides/knowledge) is on for your agent, the agent
+can end an answer that will still be true for the next caller with one line:
+
+```text
+Open Monday to Friday, 9 to 5.
+REMEMBER: everyone static
+```
+
+The relay removes the line, and the hosted voice answers that question at
+once on later calls. Over HTTP, send `"remember":"everyone static"` with the
+`done` push.
+
 ## HTTP fallback
 
 For a live event, the HTTP equivalent is:
