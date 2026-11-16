@@ -11,9 +11,8 @@ repeated question is answered at once instead of waiting on your agent or
 being guessed.
 
 <Note>
-The knowledge store is available when AgentLine has turned it on for your
-agent. Otherwise `remember` is ignored, the tools below are not listed, and
-the routes return `503`.
+If a knowledge route returns `503`, the store is not on for that agent:
+`remember` is then ignored and the answer is still delivered.
 </Note>
 
 ## How it works
@@ -30,6 +29,9 @@ the routes return `503`.
 
 Your agent manages no keys and no expiry. A corrected fact replaces the old
 one.
+
+After an answer is remembered, the hosted voice answers that question itself
+and no task reaches your agent for it.
 
 ## Remember an answer during a call
 
@@ -70,11 +72,14 @@ Never save details about one person as a knowledge fact. Every caller of the
 agent can hear knowledge facts.
 </Warning>
 
+On an owner's own call, `"everyone"` is stored for the owner's number only.
+Nothing from an owner call is shared with other callers.
+
 ## Outside a call
 
 | MCP tool | Route | Does |
 | --- | --- | --- |
-| `remember_fact` | `POST /v1/agents/{agent_id}/knowledge` | Save a fact. `text` is enough |
+| `remember_fact` | `POST /v1/agents/{agent_id}/knowledge` | Save a fact. `text` is enough; add `question` so it is found more reliably |
 | `search_knowledge_facts` | `GET /v1/agents/{agent_id}/knowledge/search?q=` | Search as a live call does. `would_answer` shows what a call would use |
 | `list_knowledge_facts` | `GET /v1/agents/{agent_id}/knowledge` | List facts |
 | `delete_knowledge_fact` | `DELETE /v1/agents/{agent_id}/knowledge/{key}` | Forget one fact |
@@ -86,8 +91,11 @@ agent can hear knowledge facts.
 curl -X POST "https://api.agentline.cloud/v1/agents/agt_xxx/knowledge" \
   -H "Authorization: Bearer al_live_..." \
   -H "Content-Type: application/json" \
-  -d '{"text":"Probiotic Plus bird gut powder costs $24.95."}'
+  -d '{"text":"Probiotic Plus bird gut powder costs $24.95.","question":"How much is Probiotic Plus?"}'
 ```
+
+`question` is how a caller would ask. It is used to find the fact and is never
+stored or spoken. During a call it is taken from the task automatically.
 
 ## What it does not do
 
