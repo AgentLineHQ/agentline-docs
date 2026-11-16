@@ -1,0 +1,105 @@
+---
+title: Knowledge Store
+description: Mark an answer to be remembered so later callers get it at once, without a lookup.
+icon: brain
+---
+
+# Knowledge Store
+
+The knowledge store holds facts the hosted voice answers callers from. A
+repeated question is answered at once instead of waiting on your agent or
+being guessed.
+
+<Note>
+If a knowledge route returns `503`, the store is not on for that agent:
+`remember` is then ignored and the answer is still delivered.
+</Note>
+
+## How it works
+
+1. A caller asks something the hosted voice does not know. It asks your agent
+   through [Agent Relay](/guides/relay).
+2. Your agent answers. If the answer will still be true for the next person,
+   it tags the answer `remember`.
+3. On later calls the same question is answered from the stored fact, with no
+   round trip to your agent.
+4. Each fact has a maximum age: about a day when it changes, about a month
+   when it is static. After that the question goes back to your agent, and
+   its answer stores the fact again.
+
+Your agent manages no keys and no expiry. A corrected fact replaces the old
+one.
+
+After an answer is remembered, the hosted voice answers that question itself
+and no task reaches your agent for it.
+
+## Remember an answer during a call
+
+Add `remember` to the `done` push:
+
+```bash
+curl -X POST "https://api.agentline.cloud/v1/calls/call_xxx/context?turn_id=turn_xxx" \
+  -H "X-Push-Token: PUSH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"turn_id":"turn_xxx","disposition":"done","context":"Open Monday to Friday, 9 to 5.","remember":"everyone static"}'
+```
+
+| `remember` | Use for |
+| --- | --- |
+| `"everyone"` | True for any caller, and it changes: stock, prices |
+| `"everyone static"` | True for any caller, rarely changes: hours, policies |
+| `"caller"` | About this caller only: their appointment, order, preference |
+| omitted | A failure, a one-off, or anything about someone else |
+
+With the persistent relay, the agent ends its answer with one line instead.
+The relay removes the line and it is never spoken:
+
+```text
+Open Monday to Friday, 9 to 5.
+REMEMBER: everyone static
+```
+
+## Two kinds of fact
+
+| | Knowledge facts | Contact facts |
+| --- | --- | --- |
+| Holds | Products, prices, policies, hours | One person's appointment, order, preferences |
+| Heard by | Every caller of the agent | Calls with that phone number only |
+| Saved with | `"everyone"`, `remember_fact` | `"caller"`, `set_contact_fact` |
+
+<Warning>
+Never save details about one person as a knowledge fact. Every caller of the
+agent can hear knowledge facts.
+</Warning>
+
+On an owner's own call, `"everyone"` is stored for the owner's number only.
+Nothing from an owner call is shared with other callers.
+
+## Outside a call
+
+| MCP tool | Route | Does |
+| --- | --- | --- |
+| `remember_fact` | `POST /v1/agents/{agent_id}/knowledge` | Save a fact. `text` is enough; add `question` so it is found more reliably |
+| `search_knowledge_facts` | `GET /v1/agents/{agent_id}/knowledge/search?q=` | Search as a live call does. `would_answer` shows what a call would use |
+| `list_knowledge_facts` | `GET /v1/agents/{agent_id}/knowledge` | List facts |
+| `delete_knowledge_fact` | `DELETE /v1/agents/{agent_id}/knowledge/{key}` | Forget one fact |
+| `set_contact_fact` | `PUT /v1/agents/{agent_id}/contact-facts` | Save one detail about a phone number |
+| `list_contact_facts` | `GET /v1/agents/{agent_id}/contact-facts?phone_number=` | List a number's details |
+| `delete_contact_facts` | `DELETE /v1/agents/{agent_id}/contact-facts?phone_number=&key=` | Forget one detail, or all without `key` |
+
+```bash
+curl -X POST "https://api.agentline.cloud/v1/agents/agt_xxx/knowledge" \
+  -H "Authorization: Bearer al_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Probiotic Plus bird gut powder costs $24.95.","question":"How much is Probiotic Plus?"}'
+```
+
+`question` is how a caller would ask. It is used to find the fact and is never
+stored or spoken. During a call it is taken from the task automatically.
+
+## What it does not do
+
+- It does not answer from an expired fact, or from one that only loosely
+  matches the question. Those questions go to your agent.
+- It does not replace the relay. Live data and actions still go to your agent.
+- It does not store what a caller said. Only what your agent looked up or did.
