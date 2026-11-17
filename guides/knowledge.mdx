@@ -10,10 +10,22 @@ The knowledge store holds facts the hosted voice answers callers from. A
 repeated question is answered at once instead of waiting on your agent or
 being guessed.
 
-<Note>
-If a knowledge route returns `503`, the store is not on for that agent:
-`remember` is then ignored and the answer is still delivered.
-</Note>
+## Set up
+
+There is nothing to switch on. Every agent has a store, and it is empty until
+something is saved to it. Save the answers callers ask for most (hours,
+address, prices, policies):
+
+```bash
+curl -X POST "https://api.agentline.cloud/v1/agents/agt_xxx/knowledge" \
+  -H "Authorization: Bearer al_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Open Monday to Friday, 9 AM to 5 PM.","question":"When are you open?","kind":"static"}'
+```
+
+The hosted voice answers those questions itself from then on. Your agent can
+do this for you: its skill file tells it to ask you for these facts during
+setup.
 
 ## How it works
 
@@ -51,8 +63,9 @@ curl -X POST "https://api.agentline.cloud/v1/calls/call_xxx/context?turn_id=turn
 | `"caller"` | About this caller only: their appointment, order, preference |
 | omitted | A failure, a one-off, or anything about someone else |
 
-With the persistent relay, the agent ends its answer with one line instead.
-The relay removes the line and it is never spoken:
+Or the agent ends its answer with one extra line instead. This is how it works
+with the persistent relay, where the answer is plain text. The line is removed
+and never spoken:
 
 ```text
 Open Monday to Friday, 9 to 5.
@@ -72,8 +85,7 @@ Never save details about one person as a knowledge fact. Every caller of the
 agent can hear knowledge facts.
 </Warning>
 
-On an owner's own call, `"everyone"` is stored for the owner's number only.
-Nothing from an owner call is shared with other callers.
+Answers given on an owner's own call are never shared with other callers.
 
 ## Outside a call
 
@@ -97,9 +109,19 @@ curl -X POST "https://api.agentline.cloud/v1/agents/agt_xxx/knowledge" \
 `question` is how a caller would ask. It is used to find the fact and is never
 stored or spoken. During a call it is taken from the task automatically.
 
+`kind` is `static` (hours, policies) or `changing` (stock, prices; the
+default). One fact per save, up to 1,000 characters; up to 2,000 facts per
+agent. The `key` that the delete route needs is in the save response and in
+the list.
+
 ## What it does not do
 
 - It does not answer from an expired fact, or from one that only loosely
   matches the question. Those questions go to your agent.
 - It does not replace the relay. Live data and actions still go to your agent.
 - It does not store what a caller said. Only what your agent looked up or did.
+
+<Note>
+A `503` from a knowledge route means the store is switched off. Answers are
+still delivered to the caller.
+</Note>
