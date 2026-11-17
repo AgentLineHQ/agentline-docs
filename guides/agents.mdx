@@ -48,17 +48,17 @@ Bearer `al_live_...` key. The Node package is not on npm.
 | `initial_greeting` | Opening line spoken when a call connects |
 | `voice_id` | Voice support depends on the number service. Presets and custom UUIDs need a configured mapping where required; omit the field to use the service default. Presets: `female-1` (friendly), `female-2` (reassuring), `female-3` (guide), `male-1` (supportive), `male-2` (thinker), `male-3` (helpful) |
 | `transfer_number` | Must be the owner's phone. A different number is rejected. Live transfers dial only `owner_phone`. |
-| `voicemail_message` | Spoken message left on outbound voicemail. **Required** if the agent should leave a mailbox message; without it the agent hangs up. |
+| `voicemail_message` | Exact message left on outbound voicemail. Optional: without it, each outbound call leaves a message written from that call's prompt. |
 | `owner_phone` | Owner number in E.164. Calls from it enter task mode, and it is the only live-call transfer destination. Setting it also sets `transfer_number`. |
 
 ## Leaving voicemail
 
-On outbound calls the pipeline detects a mailbox and leaves `voicemail_message`:
+On outbound calls the pipeline detects a mailbox and always leaves a message:
 
 - **Greeting** — *"You've reached…"*, *"12418174 is not available"*, *"leave a message after the beep"*. The agent does **not** press keys. It waits for the beep, speaks the message, and hangs up.
-- **Record-key menu** — *"To disconnect, press 1. To record your message, press 2."* The agent presses **2**, waits for the beep, then leaves the same message. If `voicemail_message` is unset it presses disconnect instead.
+- **Record-key menu** — *"To disconnect, press 1. To record your message, press 2."* The agent presses **2**, waits for the beep, then leaves the same message.
 
-Include who you are, why you're calling, and a callback number. Do **not** add "stay silent on automated messages" or "hang up if you hear press 1" to the system prompt — that fights the built-in handler.
+The message is `voicemail_message` when set, word for word. When it is unset, AgentLine writes one from the call's system prompt and greeting (who is calling, why, and a request to call back); if that cannot be written in time, the agent leaves a short message with its name asking for a call back. Set `voicemail_message` when you need exact wording, and put a callback number in the prompt if it should be said. Do **not** add "stay silent on automated messages" or "hang up if you hear press 1" to the system prompt — that fights the built-in handler.
 
 <CodeGroup>
   ```python

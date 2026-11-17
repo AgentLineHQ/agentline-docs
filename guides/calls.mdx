@@ -52,16 +52,15 @@ Outbound calls **listen first**. The pipeline classifies what picked up:
 | What it hears | What it does |
 |---------------|--------------|
 | Live human (*"Hello?"*) | Introduces itself from `initial_greeting` |
-| Voicemail greeting (*"X is not available"*, *"leave a message"*) | Waits for the beep, leaves `voicemail_message`, hangs up |
-| Voicemail key menu (*"press 2 to record"*) | Presses **2**, then leaves `voicemail_message` |
+| Voicemail greeting (*"X is not available"*, *"leave a message"*) | Waits for the beep, leaves a message, hangs up |
+| Voicemail key menu (*"press 2 to record"*) | Presses **2**, then leaves a message |
 | IVR (*"Press 1 for sales"*) | Sends a real DTMF tone for a key the menu actually offered. `0` is used only if the menu listed it. |
 | Call screening (*"State your name"*) | States name and purpose |
 
-<Warning>
-  The agent leaves a voicemail **only** if `voicemail_message` is set on the
-  agent (`PATCH /v1/agents`). Without it, a mailbox greeting hangs up and a
-  "press 2 to record" menu presses disconnect. See [Agents](/guides/agents).
-</Warning>
+<Note>
+  The message is the agent's `voicemail_message` when set. Without it, the
+  agent leaves one written from the call's prompt. See [Agents](/guides/agents).
+</Note>
 
 ## Control and inspect
 
