@@ -87,6 +87,20 @@ agent can hear knowledge facts.
 
 Answers given on an owner's own call are never shared with other callers.
 
+Both kinds belong to one agent. Your other agents, even on the same account,
+do not see them.
+
+Saving a contact fact with the same `key` for the same number replaces it. It
+stays until changed or deleted. Up to 400 characters each, 50 per number.
+
+## What the voice already knows about a caller
+
+Nothing needs saving for this. On every call the voice sees, for that number:
+the saved contact name and label, a short note on each of the last 3 calls
+(90 days) and the last 8 texts (30 days). Your agent does not need to save
+those as contact facts. A caller ID can be faked, so the voice treats this as
+a hint, not proof of who is speaking.
+
 ## Outside a call
 
 | MCP tool | Route | Does |
