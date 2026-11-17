@@ -113,6 +113,20 @@ as a fallback, or receive non-live events via webhook.
   ```
 </CodeGroup>
 
+## 5. Give the voice a memory
+
+Save the answers callers ask for most. The hosted voice then answers them
+itself, without a lookup and without guessing. Nothing needs switching on.
+
+```bash
+curl -X POST "https://api.agentline.cloud/v1/agents/agt_xxx/knowledge" \
+  -H "Authorization: Bearer al_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Open Monday to Friday, 9 AM to 5 PM.","question":"When are you open?","kind":"static"}'
+```
+
+See [Knowledge Store](/guides/knowledge).
+
 <Tip>
   All phone numbers are E.164 format, e.g. `+12125557890`. Numbers are US or Canada.
   Plan-included numbers use the allowance first; additional numbers cost \$3.00/month
