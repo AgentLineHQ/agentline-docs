@@ -20,6 +20,12 @@ Otherwise it is detached from your account when the trial ends, and calls and
 texts on it stop for you. `GET /v1/billing/balance` returns the trial's
 `status`, `ends_at`, `call_seconds_remaining` and `sms_remaining`.
 
+On a plan, the same response returns `plan.allowance` with included, used and
+remaining minutes, SMS and numbers (reset on the 1st of each month, 00:00 UTC),
+and `number_renewals`: each number's next 30-day `renews_at`, whether the plan
+covers it (`covered_by_plan`) and the `renewal_fee` charged to the wallet when
+it does not.
+
 JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
 Bearer `al_live_...` key. The Node package is not on npm.
 
