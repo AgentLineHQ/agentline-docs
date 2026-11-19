@@ -62,13 +62,39 @@ Outbound calls **listen first**. The pipeline classifies what picked up:
   agent leaves one written from the call's prompt. See [Agents](/guides/agents).
 </Note>
 
+## Test without dialling anyone
+
+Call the test line, `+15555550100`. Any `+1 555` number works the same way:
+area code 555 belongs to no real US or Canada number.
+
+- Nothing is dialled or billed, and free trial minutes are not used.
+- The call returns at once with `status: "completed"` and `test: true`.
+- The transcript has two lines: your agent's greeting and the test line's reply.
+- `call.completed` fires with `test: true`, so webhooks and the relay can be tested too.
+
+The agent still needs an active number: it is the caller ID.
+
+<CodeGroup>
+  ```python
+  call = client.calls.create(agent_id=agent.id, to_number="+15555550100")
+  print(call["status"], call["test"])          # completed True
+  print(client.calls.get_transcript(call["id"]))
+  ```
+  ```bash
+  curl -X POST https://api.agentline.cloud/v1/calls \
+    -H "Authorization: Bearer al_live_..." \
+    -H "Content-Type: application/json" \
+    -d '{"agent_id":"agt_xxx","to_number":"+15555550100"}'
+  ```
+</CodeGroup>
+
 ## Control and inspect
 
 <CodeGroup>
   ```python
-  client.calls.hangup(call.id)
-  client.calls.get(call.id)
-  transcript = client.calls.get_transcript(call.id)
+  client.calls.hangup(call["id"])
+  client.calls.get(call["id"])
+  transcript = client.calls.get_transcript(call["id"])
   client.calls.list(status="completed")
   ```
   ```javascript
@@ -107,7 +133,7 @@ Send short facts, not a script. Include `disposition`:
 <CodeGroup>
   ```python
   client.calls.push_context(
-      call.id,
+      call["id"],
       turn_id="turn_xxx",
       context="Order ships Tuesday.",
       disposition="done",

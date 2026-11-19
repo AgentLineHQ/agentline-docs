@@ -50,11 +50,19 @@ agent = client.agents.create(
 )
 client.numbers.buy(agent_id=agent.id, country="US", area_code="415")
 
-call = client.calls.create(agent_id=agent.id, to_number="+12125557890")
-client.calls.hangup(call.id)
+# +15555550100 is the test line: nothing is dialled or billed.
+call = client.calls.create(agent_id=agent.id, to_number="+15555550100")
+print(call["id"], call["status"])
 
-print(client.calls.get_transcript(call.id))
+print(client.calls.get_transcript(call["id"]))
 ```
+
+`calls.create` and `messages.send` return plain dicts, so read their fields as
+`call["id"]` and `call["status"]`. Agents and numbers return typed objects
+(`agent.id`).
+
+To test without dialling or texting anyone, use the test line `+15555550100`
+(any `+1 555` number). See [Calls](/guides/calls#test-without-dialling-anyone).
 
 The SDK is generated from the same OpenAPI spec as this API reference, so the
 SDK and docs always match.

@@ -65,6 +65,20 @@ tools or override your rules.
 JavaScript examples call `https://api.agentline.cloud` with `fetch` and a
 Bearer `al_live_...` key. The Node package is not on npm.
 
+## Test without texting anyone
+
+Text the test line, `+15555550100` (any `+1 555` number works). Nothing is sent
+or billed, and free trial texts are not used. The response has
+`status: "delivered"` and `test: true`. The test line then texts back once, so
+the reply shows up in message history and as an `sms.received` event, the same
+way a real reply would. It answers a number at most once an hour.
+
+```python
+message = client.messages.send(agent_id=agent.id, to_number="+15555550100", body="Hello")
+print(message["status"], message["test"])     # delivered True
+print(client.messages.list(agent_id=agent.id, limit=2))
+```
+
 ## List messages and conversations
 
 <CodeGroup>

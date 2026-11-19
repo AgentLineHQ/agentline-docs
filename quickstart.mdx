@@ -23,7 +23,7 @@ required).
   ```
 </CodeGroup>
 
-The verify response returns `api_key` (shown once â€” store it). New accounts
+The verify response returns `api_key` (shown once, so store it). New accounts
 start with a $0 balance. Your first US or Canada number is free and starts a
 7-day trial with 10 call minutes and 10 SMS. Recharge or pick a plan to keep
 the trial number; use
@@ -47,9 +47,10 @@ the JavaScript example uses `fetch`.
       initial_greeting="Hello! How can I help?",
   )
   client.numbers.buy(agent_id=agent.id, country="US", area_code="415")
-  call = client.calls.create(agent_id=agent.id, to_number="+12125557890")
+  # +15555550100 is the test line: nothing is dialled or billed.
+  call = client.calls.create(agent_id=agent.id, to_number="+15555550100")
 
-  print("Call started:", call.id)
+  print("Call:", call["id"], call["status"])
   ```
   ```javascript
   const headers = {
@@ -76,12 +77,20 @@ the JavaScript example uses `fetch`.
   const call = await fetch("https://api.agentline.cloud/v1/calls", {
     method: "POST",
     headers,
-    body: JSON.stringify({ agent_id: agent.id, to_number: "+12125557890" }),
+    // +15555550100 is the test line: nothing is dialled or billed.
+    body: JSON.stringify({ agent_id: agent.id, to_number: "+15555550100" }),
   }).then((res) => res.json());
 
-  console.log("Call started:", call.id);
+  console.log("Call:", call.id, call.status);
   ```
 </CodeGroup>
+
+<Tip>
+  `+15555550100` is the test line (any `+1 555` number works). Nothing is
+  dialled or billed. The call comes back `completed` with `test: true` and a
+  short transcript; a text comes back `delivered` and the line texts back once.
+  Put a real number in `to_number` to call someone.
+</Tip>
 
 ## 3. Install live event delivery
 
