@@ -1,0 +1,118 @@
+---
+title: Give your Claude Code agent a phone number
+description: Add AgentLine to Claude Code with claude mcp add so the agent can buy a US phone number, make and answer calls, and receive SMS.
+---
+
+# Give your Claude Code agent a phone number
+
+Connect AgentLine's MCP server and Claude Code gets a real US phone number
+it can use to make and answer calls.
+
+## MCP quickstart
+
+<Steps>
+  <Step title="Get an API key">
+    Create a key in the [AgentLine dashboard](https://agentline.cloud). Keys
+    look like `al_live_...`. Export it so Claude Code can expand the header:
+
+    ```bash
+    export AGENTLINE_API_KEY="al_live_..."
+    ```
+  </Step>
+  <Step title="Add the MCP server">
+    Claude Code's remote transport is HTTP. Single-quote the header so the
+    shell leaves `${AGENTLINE_API_KEY}` in the config and Claude Code expands
+    it:
+
+    ```bash
+    claude mcp add --transport http --scope user agentline https://api.agentline.cloud/mcp \
+      --header 'Authorization: Bearer ${AGENTLINE_API_KEY}'
+    ```
+
+    The project file `.mcp.json` is the same server. `type: "http"` is the
+    Claude Code name for Streamable HTTP (`streamable-http` is accepted as
+    an alias):
+
+    ```json
+    {
+      "mcpServers": {
+        "agentline": {
+          "type": "http",
+          "url": "https://api.agentline.cloud/mcp",
+          "headers": {
+            "Authorization": "Bearer ${AGENTLINE_API_KEY}"
+          }
+        }
+      }
+    }
+    ```
+
+    Or write that JSON with the CLI:
+
+    ```bash
+    claude mcp add-json --scope project agentline \
+      '{"type":"http","url":"https://api.agentline.cloud/mcp","headers":{"Authorization":"Bearer ${AGENTLINE_API_KEY}"}}'
+    ```
+
+    Project-scoped servers in `.mcp.json` wait for approval the first time
+    you run `claude` in that repo.
+  </Step>
+  <Step title="Install the AgentLine skill (optional)">
+    The skill teaches the agent the call, number, and webhook rules. Point
+    Claude Code at [agentline.cloud/skill.md](https://agentline.cloud/skill.md),
+    or install
+    [AgentLineHQ/agentline-skill](https://www.skills.sh/agentlinehq/agentline-skill/agentline)
+    with the skills CLI:
+
+    ```bash
+    npx skills add https://github.com/agentlinehq/agentline-skill --skill agentline
+    ```
+  </Step>
+  <Step title="Verify it works">
+    List servers, then ask Claude Code to list its AgentLine tools:
+
+    ```bash
+    claude mcp list
+    ```
+
+    `agentline` should show as connected. Ask Claude to call `create_agent`
+    or describe the AgentLine tools it can see. A missing
+    `AGENTLINE_API_KEY` leaves the header unexpanded and the server fails
+    to connect.
+  </Step>
+</Steps>
+
+Stdio-only clients can use the bridge published in the AgentLine skill. See
+the [MCP guide](/guides/mcp).
+
+## First task
+
+Ask Claude Code:
+
+> Buy a US phone number, then register a webhook so you can take an inbound call.
+
+It should create an agent if you do not already have one, buy a US number
+(area codes such as `212` or `415`), and set a webhook URL. Call that number
+to confirm the agent answers. Inbound texts on the same number show up as
+`sms.received` events. Details are in [Webhooks](/guides/webhooks) and
+[Messages](/guides/messages).
+
+## What the agent can do
+
+- Buy a US phone number for an agent.
+- Place outbound calls and answer inbound calls.
+- Receive SMS on that number and read the text in message history.
+- Take live call and message events through a [webhook](/guides/webhooks) or the [events](/guides/events) mailbox.
+
+## Pricing
+
+US numbers are **\$2.00/month** each. Calls are **\$0.10/min** in both
+directions. A 0-second call is free. A connected call has a one-minute
+minimum, then the actual duration, rounded up to the cent. Inbound SMS is
+**\$0.02** per message.
+
+## Next
+
+- [MCP](/guides/mcp) for the shared server URL and the `mcp-remote` bridge
+- [Webhooks](/guides/webhooks) for signed event delivery
+- [Messages](/guides/messages) for texts the number receives

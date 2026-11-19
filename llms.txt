@@ -1,0 +1,68 @@
+# AgentLine
+
+> US phone numbers and voice for AI agents. Inbound SMS can be read. Documentation, SDKs, and API reference.
+
+## MCP setup
+
+Connect: add the MCP server https://api.agentline.cloud/mcp with header Authorization: Bearer al_live_<key> (or npx -y mcp-remote https://api.agentline.cloud/mcp --header "Authorization: Bearer $AGENTLINE_API_KEY").
+
+- [Give your OpenClaw agent a phone number](https://docs.agentline.cloud/integrations/openclaw.md): Connect AgentLine MCP to OpenClaw so the agent can buy a US phone number, place and answer calls, and receive SMS.
+- [Give your Hermes agent a phone number](https://docs.agentline.cloud/integrations/hermes.md): Give a Hermes agent a US phone number with AgentLine MCP. Add the server to ~/.hermes/config.yaml.
+- [Give your Claude Code agent a phone number](https://docs.agentline.cloud/integrations/claude-code.md): Add AgentLine to Claude Code with claude mcp add so the agent can buy a US phone number, make and answer calls, and receive SMS.
+- [MCP](https://docs.agentline.cloud/guides/mcp.md): Connect an MCP client to AgentLine with mcp-remote and a Bearer API key.
+
+## Docs
+
+- [Phone Numbers, Voice & SMS API for AI Agents](https://docs.agentline.cloud/introduction.md): AgentLine is the AI-native telephony API — give any AI agent a real US phone number for outbound calls, inbound voice, and inbound SMS. Guides, SDKs (Python & Node), pricing, and interactive API reference.
+- [Quickstart](https://docs.agentline.cloud/quickstart.md): Create an agent, buy a number, and make your first call.
+- [Authentication](https://docs.agentline.cloud/authentication.md): Every request uses a Bearer API key (al_live_...).
+- [Agents](https://docs.agentline.cloud/guides/agents.md): Create and configure AI voice agents.
+- [Phone Numbers](https://docs.agentline.cloud/guides/numbers.md): Provision and manage US phone numbers for your agents.
+- [Calls](https://docs.agentline.cloud/guides/calls.md): Make outbound calls, hang up, and read transcripts.
+- [Messages](https://docs.agentline.cloud/guides/messages.md): Read SMS received on an agent's phone number.
+- [MCP](https://docs.agentline.cloud/guides/mcp.md): Connect an MCP client to AgentLine with mcp-remote and a Bearer API key.
+- [Events](https://docs.agentline.cloud/guides/events.md): Receive durable live events through the Agent Relay or fallback mailbox.
+- [Agent Relay](https://docs.agentline.cloud/guides/relay.md): Persistent live context delivery for Hermes, OpenClaw, Claude Code, Codex, and custom agents.
+- [Webhooks](https://docs.agentline.cloud/guides/webhooks.md): Receive signed, real-time event deliveries per agent.
+- [Give your OpenClaw agent a phone number](https://docs.agentline.cloud/integrations/openclaw.md): Connect AgentLine MCP to OpenClaw so the agent can buy a US phone number, place and answer calls, and receive SMS.
+- [Give your Hermes agent a phone number](https://docs.agentline.cloud/integrations/hermes.md): Give a Hermes agent a US phone number with AgentLine MCP. Add the server to ~/.hermes/config.yaml.
+- [Give your Claude Code agent a phone number](https://docs.agentline.cloud/integrations/claude-code.md): Add AgentLine to Claude Code with claude mcp add so the agent can buy a US phone number, make and answer calls, and receive SMS.
+- [Python SDK](https://docs.agentline.cloud/sdk/python.md): Use AgentLine from Python.
+- [Node SDK](https://docs.agentline.cloud/sdk/node.md): The Node SDK is not on npm yet. Call the REST API with fetch.
+- [Get Account Voice](https://docs.agentline.cloud/api-reference/voice/get-account-voice.md): Get the current account-level default voice for AI phone agents.
+- [Reset Account Voice](https://docs.agentline.cloud/api-reference/voice/reset-account-voice.md): Reset account voice to the system default.
+- [Update Account Voice](https://docs.agentline.cloud/api-reference/voice/update-account-voice.md): Set the account-level default voice for AI phone agents.
+- [Get Available Voices](https://docs.agentline.cloud/api-reference/voice/get-available-voices.md): List all available voice presets for AI phone agents.
+- [List Agents](https://docs.agentline.cloud/api-reference/agents/list-agents.md): List all AI voice agents configured on your account.
+- [Create Agent](https://docs.agentline.cloud/api-reference/agents/create-agent.md): Create a new AI voice agent for telephony.
+- [Get Agent](https://docs.agentline.cloud/api-reference/agents/get-agent.md): Get details of a specific AI voice agent.
+- [Delete Agent](https://docs.agentline.cloud/api-reference/agents/delete-agent.md): Delete an AI voice agent.
+- [Update Agent](https://docs.agentline.cloud/api-reference/agents/update-agent.md): Update an AI voice agent's configuration.
+- [Get Balance](https://docs.agentline.cloud/api-reference/billing/get-balance.md): Get your AI telephony account balance and rate card.
+- [Get Expenditure](https://docs.agentline.cloud/api-reference/billing/get-expenditure.md): Get a detailed expenditure breakdown for AI telephony usage.
+- [Get Call Expenditure](https://docs.agentline.cloud/api-reference/billing/get-call-expenditure.md): List individual call charges from AI agent phone calls.
+- [Get Number Expenditure](https://docs.agentline.cloud/api-reference/billing/get-number-expenditure.md): List phone number provisioning charges.
+- [Get Spending Summary](https://docs.agentline.cloud/api-reference/billing/get-spending-summary.md): Month-over-month spending summary.
+- [List Calls](https://docs.agentline.cloud/api-reference/calls/list-calls.md): List voice calls made by your AI agents.
+- [Create Call](https://docs.agentline.cloud/api-reference/calls/create-call.md): Make an outbound phone call from your AI agent.
+- [Get Call](https://docs.agentline.cloud/api-reference/calls/get-call.md): Get full details of a specific voice call.
+- [Push Call Context](https://docs.agentline.cloud/api-reference/calls/push-call-context.md): Push context into a LIVE relay-mode call (mid-call context injection).
+- [Hangup Call](https://docs.agentline.cloud/api-reference/calls/hangup-call.md): Hang up an active phone call.
+- [Get Transcript](https://docs.agentline.cloud/api-reference/calls/get-transcript.md): Get the full conversation transcript for a call.
+- [List Events](https://docs.agentline.cloud/api-reference/events/list-events.md): Poll for telephony events from your AI agents.
+- [Peek Events](https://docs.agentline.cloud/api-reference/events/peek-events.md): Peek at pending telephony events without consuming them.
+- [List Messages](https://docs.agentline.cloud/api-reference/messages/list-messages.md): List SMS messages for your AI agents.
+- [List Conversations](https://docs.agentline.cloud/api-reference/messages/list-conversations.md): List SMS conversation threads for your AI agents.
+- [List Numbers](https://docs.agentline.cloud/api-reference/numbers/list-numbers.md): List all phone numbers provisioned on your account.
+- [Provision](https://docs.agentline.cloud/api-reference/numbers/provision.md): Buy a US phone number for your AI agent.
+- [Get Number](https://docs.agentline.cloud/api-reference/numbers/get-number.md): Get details of a specific phone number.
+- [Reassign Number](https://docs.agentline.cloud/api-reference/numbers/reassign-number.md): Reassign a phone number to a different AI agent.
+- [Release Phone Number](https://docs.agentline.cloud/api-reference/numbers/release-phone-number.md): Permanently release a phone number that is not in use.
+- [Get Webhooks](https://docs.agentline.cloud/api-reference/webhooks/get-webhooks.md): List the account's per-agent webhook configuration(s).
+- [Set Webhook](https://docs.agentline.cloud/api-reference/webhooks/set-webhook.md): Create or replace an agent's webhook.
+- [Delete Webhook](https://docs.agentline.cloud/api-reference/webhooks/delete-webhook.md): Remove an agent's webhook. No events for that agent will be delivered via HTTP afterwards; they remain available via GET /v1/events (the mailbox).
+- [Test Webhook](https://docs.agentline.cloud/api-reference/webhooks/test-webhook.md): Fire a signed `webhook.test` event to the agent's webhook.
+
+## OpenAPI Specs
+
+- [openapi](/openapi.json)

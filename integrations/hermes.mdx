@@ -1,0 +1,96 @@
+---
+title: Give your Hermes agent a phone number
+description: Give a Hermes agent a US phone number with AgentLine MCP. Add the server to ~/.hermes/config.yaml, install the skill, then buy a number and take calls.
+---
+
+# Give your Hermes agent a phone number
+
+Connect AgentLine's MCP server and your Hermes agent gets a real US phone
+number it can use to make and answer calls.
+
+## MCP quickstart
+
+<Steps>
+  <Step title="Get an API key">
+    Create a key in the [AgentLine dashboard](https://agentline.cloud). Keys
+    look like `al_live_...`. Hermes reads secrets from `~/.hermes/.env`:
+
+    ```bash
+    echo 'AGENTLINE_API_KEY=al_live_...' >> ~/.hermes/.env
+    ```
+  </Step>
+  <Step title="Add the MCP server">
+    Hermes reads `~/.hermes/config.yaml`. HTTP servers use `url` and
+    `headers` (not a local `command`). Add:
+
+    ```yaml
+    mcp_servers:
+      agentline:
+        url: "https://api.agentline.cloud/mcp"
+        headers:
+          Authorization: "Bearer ${AGENTLINE_API_KEY}"
+    ```
+
+    `${AGENTLINE_API_KEY}` resolves from `~/.hermes/.env`. In a Hermes
+    session, run `/reload-mcp` after you save the file. Check the connection
+    with:
+
+    ```bash
+    hermes mcp test agentline
+    ```
+  </Step>
+  <Step title="Install the AgentLine skill (optional)">
+    The skill teaches the agent the call, number, and webhook rules. Hermes
+    can install a skill from a URL:
+
+    ```bash
+    hermes skills install https://agentline.cloud/skill.md
+    ```
+
+    The same skill is listed as
+    [AgentLineHQ/agentline-skill](https://www.skills.sh/agentlinehq/agentline-skill/agentline)
+    on skills.sh.
+  </Step>
+  <Step title="Verify it works">
+    Ask Hermes to list its AgentLine tools. You should see tools such as
+    `create_agent` and `make_outbound_call`. `hermes mcp test agentline`
+    prints what the server returned. If the header still contains the
+    literal `${AGENTLINE_API_KEY}`, the variable is missing from
+    `~/.hermes/.env`.
+  </Step>
+</Steps>
+
+Stdio-only clients can use the bridge published in the AgentLine skill. See
+the [MCP guide](/guides/mcp).
+
+## First task
+
+Ask the agent:
+
+> Buy a US phone number, then register a webhook so you can take an inbound call.
+
+It should create an agent if you do not already have one, buy a US number
+(area codes such as `212` or `415`), and set a webhook URL. Call that number
+to confirm the agent answers. Inbound texts on the same number show up as
+`sms.received` events. Details are in [Webhooks](/guides/webhooks) and
+[Messages](/guides/messages).
+
+## What the agent can do
+
+- Buy a US phone number for an agent.
+- Place outbound calls and answer inbound calls.
+- Receive SMS on that number and read the text in message history.
+- Take live call and message events through a [webhook](/guides/webhooks) or the [events](/guides/events) mailbox.
+
+## Pricing
+
+US numbers are **\$2.00/month** each. Calls are **\$0.10/min** in both
+directions. A 0-second call is free. A connected call has a one-minute
+minimum, then the actual duration, rounded up to the cent. Inbound SMS is
+**\$0.02** per message.
+
+## Next
+
+- [MCP](/guides/mcp) for the shared server URL and the `mcp-remote` bridge
+- [Webhooks](/guides/webhooks) for signed event delivery
+- [Messages](/guides/messages) for texts the number receives

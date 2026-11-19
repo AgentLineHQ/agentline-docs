@@ -63,6 +63,14 @@
             ]
           },
           {
+            "group": "Integrations",
+            "pages": [
+              "integrations/openclaw",
+              "integrations/hermes",
+              "integrations/claude-code"
+            ]
+          },
+          {
             "group": "SDKs",
             "pages": ["sdk/python", "sdk/node"]
           }
